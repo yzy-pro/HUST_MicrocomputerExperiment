@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+REAL_OBJCOPY="/home/yzy/.eide/tools/sdcc_mcs51/sdcc-4.5.0-with-binutils/bin/i51-elf-objcopy"
+
+in_file="${1:-}"
+if [[ -z "$in_file" ]]; then
+    echo "packihx: missing input file" >&2
+    exit 1
+fi
+
+if [[ -f "$in_file" ]]; then
+    cat "$in_file"
+    exit 0
+fi
+
+base="${in_file%.ihx}"
+elf_file="${base}.elf"
+if [[ -f "$elf_file" ]]; then
+    tmp_hex="${TMPDIR:-/tmp}/packihx.$$.$RANDOM.hex"
+    trap 'rm -f "$tmp_hex"' EXIT
+    "$REAL_OBJCOPY" -O ihex "$elf_file" "$tmp_hex"
+    cat "$tmp_hex"
+    exit 0
+fi
+
+echo "packihx: input not found: $in_file" >&2
+exit 1

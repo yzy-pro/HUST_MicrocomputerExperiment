@@ -1,0 +1,6 @@
+{
+    "EIDE.SDCC.GNU_MCS51.InstallDirectory": "${workspaceFolder}/tools/sdcc_compat",
+    "EIDE.Builder.EnvironmentVariables": [
+        "DOTNET_ROLL_FORWARD=Major"
+    ]
+}
