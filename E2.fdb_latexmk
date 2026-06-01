@@ -1,11 +1,11 @@
 # Fdb version 4
-["xdvipdfmx"] 1777535503.70543 "E1.xdv" "E1.pdf" "E1" 1777535505.68424 0
-  "E1.xdv" 1777535503.6553 141204 6b3da216625c7c73940b0c8f7505cfb4 "xelatex"
+["xdvipdfmx"] 1779161613.92756 "E2.xdv" "E2.pdf" "E2" 1779161615.89274 0
+  "E2.xdv" 1779161613.87736 184080 0201e954d60d50fa5732fecf29c5ef54 "xelatex"
   (generated)
-  "E1.pdf"
+  "E2.pdf"
   (rewritten before read)
-["xelatex"] 1777535502.6417 "/home/yzy/code/MicrocomputerExperiment/E1/E1.tex" "E1.xdv" "E1" 1777535505.68279 0
-  "/home/yzy/code/MicrocomputerExperiment/E1/E1.tex" 1777535502.39435 16226 3f675b41c7b730c73d435a2f1f445117 ""
+["xelatex"] 1779161612.64808 "/home/yzy/code/MicrocomputerExperiment/E2/E2.tex" "E2.xdv" "E2" 1779161615.89129 0
+  "/home/yzy/code/MicrocomputerExperiment/E2/E2.tex" 1779161612.46121 21196 f8c179c1549162782b179ddc515bf67a ""
   "/usr/local/texlive/2025/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmmi10.tfm" 1136768653 1528 abec98dbc43e172678c11b3b9031252a ""
   "/usr/local/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmmi12.tfm" 1136768653 1524 4414a8315f39513458b80dfc63bff03a ""
@@ -39,6 +39,7 @@
   "/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransformations.code.tex" 1673816307 22012 81b34a0aa8fa1a6158cc6220b00e4f10 ""
   "/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransparency.code.tex" 1601326656 8893 e851de2175338fdf7c17f3e091d94618 ""
   "/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibraryarrows.code.tex" 1601326656 319 225dfe354ba678ff3c194968db39d447 ""
+  "/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarycalc.code.tex" 1601326656 15929 463535aa2c4268fead6674a75c0e8266 ""
   "/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarypositioning.code.tex" 1601326656 3937 3f208572dd82c71103831da976d74f1a ""
   "/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibraryshapes.geometric.code.tex" 1601326656 339 be0fe46d92a80e3385dd6a83511a46f2 ""
   "/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarytopaths.code.tex" 1608933718 11518 738408f795261b70ce8dd47459171309 ""
@@ -141,16 +142,16 @@
   "/usr/local/texlive/2025/texmf-dist/web2c/texmf.cnf" 1739380943 42148 61becc7c670cd061bb319c643c27fdd4 ""
   "/usr/local/texlive/2025/texmf-var/web2c/xetex/xelatex.fmt" 1745761497 5854851 9405beb4c6cd273e0bd26aa5e146f3e8 ""
   "/usr/local/texlive/2025/texmf.cnf" 1745761447.97632 455 5b996dcaa0eb4ef14a83b026bc0a008c ""
-  "E1.aux" 1777535503.6553 2351 29f62466a630a00d67cb22dea6ee73bc "xelatex"
-  "E1.tex" 1777535502.39435 16226 3f675b41c7b730c73d435a2f1f445117 ""
-  "codes/STARTUP.asm" 1777528289.9253 6729 81c839fc54600ae81cec3fe69a32ca81 ""
-  "figures/figure1.png" 1777531732.39406 494210 67974fadfa81417a0618cddc0ead0c50 ""
-  "figures/figure2.png" 1777531977.45773 519131 4da8735c8828673bf581c8f8c666f461 ""
-  "figures/figure3.png" 1777532122.54887 535192 01e69d018f94fee6cf2bb9f20acb718d ""
-  "figures/figure4.png" 1777532070.12058 529778 0bd78310f3ebcc7cc2c0bfb774119ad8 ""
-  "figures/figure5.png" 1777532483.31856 529811 320e64ee3622a679aa0e6146bd1bca06 ""
+  "E2.aux" 1779161613.87686 3335 10c8d9b147975fa62c30a0f16280f890 "xelatex"
+  "E2.tex" 1779161612.46121 21196 f8c179c1549162782b179ddc515bf67a ""
+  "codes/STARTUP.asm" 1779112539.744 8814 3dfb6cc5c59461846a66c88945df2af0 ""
+  "figures/figure1.png" 1779160938.09329 523643 f95cd0f9759f37e12a18f09978051ad5 ""
+  "figures/figure2.png" 1779160953.70008 510175 2a01e72a2ea6e7c50411833b2566f762 ""
+  "figures/figure3.png" 1779160967.99208 515714 3cbde260e073763e548075548af61d6e ""
+  "figures/figure4.png" 1779160979.33521 518920 9e84bfb025ae958e095054ea397f0780 ""
+  "figures/figure5.png" 1779160993.51725 515529 a22a49742453347dafd439625db714f6 ""
   (generated)
-  "E1.aux"
-  "E1.log"
-  "E1.xdv"
+  "E2.aux"
+  "E2.log"
+  "E2.xdv"
   (rewritten before read)

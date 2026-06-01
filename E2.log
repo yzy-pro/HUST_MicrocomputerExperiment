@@ -1,10 +1,10 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.4.27)  30 APR 2026 15:51
+This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.4.27)  19 MAY 2026 11:33
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**/home/yzy/code/MicrocomputerExperiment/E1/E1.tex
-(/home/yzy/code/MicrocomputerExperiment/E1/E1.tex
+**/home/yzy/code/MicrocomputerExperiment/E2/E2.tex
+(/home/yzy/code/MicrocomputerExperiment/E2/E2.tex
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-03-26>
 (/usr/local/texlive/2025/texmf-dist/tex/latex/base/article.cls
@@ -489,8 +489,10 @@ File: pgflibraryarrows.code.tex 2023-01-15 v3.1.10 (3.1.10)
 \arrowsize=\dimen314
 )) (/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarypositioning.code.tex
 File: tikzlibrarypositioning.code.tex 2023-01-15 v3.1.10 (3.1.10)
-) (./E1.aux)
-\openout1 = `E1.aux'.
+) (/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarycalc.code.tex
+File: tikzlibrarycalc.code.tex 2023-01-15 v3.1.10 (3.1.10)
+) (./E2.aux)
+\openout1 = `E2.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 27.
 LaTeX Font Info:    ... okay on input line 27.
@@ -611,32 +613,32 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 
 
 LaTeX Font Info:    Font shape `TU/FandolSong-Regular(0)/m/sl' in size <12> not available
-(Font)              Font shape `TU/FandolSong-Regular(0)/m/it' tried instead on input line 60.
+(Font)              Font shape `TU/FandolSong-Regular(0)/m/it' tried instead on input line 62.
 [1
 
 ]
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <10.95> on input line 78.
-
 
 [2]
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <10.95> on input line 81.
+
 
 [3]
-Overfull \hbox (8.01584pt too wide) in paragraph at lines 215--216
- [][] 
- []
+
+[4]
+Overfull \vbox (18.88231pt too high) has occurred while \output is active []
 
 
 
-[4] (/usr/local/texlive/2025/texmf-dist/tex/latex/listings/lstlang1.sty
+[5]
+
+[6] (/usr/local/texlive/2025/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2024/09/23 1.10c listings language file
 ) (/usr/local/texlive/2025/texmf-dist/tex/latex/listings/lstlang2.sty
 File: lstlang2.sty 2024/09/23 1.10c listings language file
 ) (/usr/local/texlive/2025/texmf-dist/tex/latex/listings/lstlang3.sty
 File: lstlang3.sty 2024/09/23 1.10c listings language file
 )
-
-[5]
 
 Package fontspec Info: 
 (fontspec)             Script 'CJK' not explicitly supported within font
@@ -661,13 +663,12 @@ Package fontspec Info:
 LaTeX Font Warning: Font shape `TU/FandolFang-Regular(0)/m/it' undefined
 (Font)              using `TU/FandolFang-Regular(0)/m/n' instead on input line 1.
 
-LaTeX Font Info:    Font shape `TU/lmtt/bx/n' in size <10.95> not available
-(Font)              Font shape `TU/lmtt/b/n' tried instead on input line 7.
 
-
-[6]
 
 [7]
+LaTeX Font Info:    Font shape `TU/lmtt/bx/n' in size <10.95> not available
+(Font)              Font shape `TU/lmtt/b/n' tried instead on input line 23.
+
 
 [8]
 
@@ -677,30 +678,42 @@ LaTeX Font Info:    Font shape `TU/lmtt/bx/n' in size <10.95> not available
 
 [11]
 
-[12])
+[12]
+
+[13]
+
+[14]
+
+[15]
+
+[16])
+
+[17]
 File: figures/figure1.png Graphic file (type bmp)
 <figures/figure1.png>
+File: figures/figure3.png Graphic file (type bmp)
+<figures/figure3.png>
+
+
+[18]
+File: figures/figure3.png Graphic file (type bmp)
+<figures/figure3.png>
 File: figures/figure2.png Graphic file (type bmp)
 <figures/figure2.png>
 
 
-[13]
-File: figures/figure3.png Graphic file (type bmp)
-<figures/figure3.png>
+[19]
+File: figures/figure5.png Graphic file (type bmp)
+<figures/figure5.png>
 File: figures/figure4.png Graphic file (type bmp)
 <figures/figure4.png>
 
 
-[14]
-File: figures/figure5.png Graphic file (type bmp)
-<figures/figure5.png>
+[20]
 
+[21]
 
-[15]
-
-[16]
-
-[17] (./E1.aux)
+[22] (./E2.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2022/08/05>
@@ -711,12 +724,12 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
  ) 
 Here is how much of TeX's memory you used:
- 21676 strings out of 470267
- 533184 string characters out of 5484665
- 1310956 words of memory out of 5000000
- 47951 multiletter control sequences out of 15000+600000
- 632893 words of font info for 83 fonts, out of 8000000 for 9000
+ 21814 strings out of 470267
+ 531204 string characters out of 5484665
+ 1303541 words of memory out of 5000000
+ 48084 multiletter control sequences out of 15000+600000
+ 632909 words of font info for 85 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 93i,9n,112p,488b,2245s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 93i,10n,112p,494b,2245s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on E1.xdv (17 pages, 141204 bytes).
+Output written on E2.xdv (22 pages, 184080 bytes).
