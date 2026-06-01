@@ -1,246 +1,176 @@
-; 小区居民通过键入相应按键选择垃圾类型（分别用P2.4~P2.7端口模拟按键输入，低电平有效，P2.7=0、P2.6=0、P2.5=0、P2.4=0分别代表“塑料纸张”、“玻璃金属”、“厨余垃圾”和“危害垃圾”四类）。
-; P1.0-P1.3四位代表垃圾桶盖开关控制，控制名为“塑料纸张”、“玻璃金属”、“厨余垃圾”和“危化品垃圾”四个垃圾桶盖，高电平为关闭状态，低电平为打开状态。 
-; P3.0~P3.3：4 个满载指示灯输出
-; R0~R3：4 个桶当前剩余容量（范围 0~9）
-; 20H bit0~bit3：4 个桶的满载标志位（1=满载）
+    ORG 0000H
+    LJMP MAIN
 
-            ORG     0000H
-            LJMP    START
+    ORG 0030H
+MAIN:
+    MOV SP, #5FH
+    ; 初始化显示缓存：默认全灭。共阴极时 0x00 为熄灭
+    MOV 40H, #SEG_OFF   ; 第1位显示数据
+    MOV 41H, #SEG_OFF   ; 第2位显示数据
+    MOV 42H, #SEG_OFF   ; 第3位显示数据
+    MOV 43H, #SEG_OFF   ; 第4位显示数据
+    MOV 44H, #00H       ; K0按下标志
 
-START:
-            ; 上电默认关闭全部盖板（P1.0~P1.3 置 1）
-            MOV     P1, #0FFH
-
-            ; 清空满载标志字节，并刷新到 P3 指示灯
-            MOV     20H, #00H
-            LCALL   UPDATE_FULL_LED
-
-            ; 启动 T0 作为伪随机扰动源
-            ; TMOD=01H -> 定时器0工作在模式1（16位）
-            MOV     TMOD, #01H
-            SETB    TR0
-
-            ; 为 4 个桶生成初始容量（0~9）
-            LCALL   RAND_0_9
-            MOV     R0, A
-            LCALL   RAND_0_9
-            MOV     R1, A
-            LCALL   RAND_0_9
-            MOV     R2, A
-            LCALL   RAND_0_9
-            MOV     R3, A
-
+    ; 段码按接线映射：P1.7=A ... P1.0=DP
+    ; 若为共阳极，请把段码与 SEG_OFF 全部按位取反
+SEG_S   EQU 0B6H
+SEG_O   EQU 0FCH
+SEG_E   EQU 09EH
+SEG_I   EQU 060H
+SEG_OFF EQU 000H
+    
 MAIN_LOOP:
-            ; 按键扫描
-            JNB     P2.7, KEY_BIN0
-            JNB     P2.6, KEY_BIN1
-            JNB     P2.5, KEY_BIN2
-            JNB     P2.4, KEY_BIN3
-            SJMP    MAIN_LOOP
+    LCALL KEY_SCAN    ; 扫描键盘并更新显示缓存
+    LCALL DISPLAY     ; 动态刷新一次数码管
+    LJMP MAIN_LOOP
 
-KEY_BIN0:
-            LJMP    TRY_BIN0
-KEY_BIN1:
-            LJMP    TRY_BIN1
-KEY_BIN2:
-            LJMP    TRY_BIN2
-KEY_BIN3:
-            LJMP    TRY_BIN3
 
-TRY_BIN0:
-            ; 若 bin0 已满（bit0=1），拒绝开盖
-            MOV     A, 20H
-            ANL     A, #01H
-            JNZ     BIN0_DENY
+; 键盘扫描子程序 (结合基本与提高要求)
+; 键盘接在P2口：P2.0~2.3为行，P2.4~2.7为列
+; 这里将 K0, K1, K2, K3 定义为按键 1, 2, 3, 4
+KEY_SCAN:
+    ; 扫描第1行 (P2.0 = 0)
+    MOV P2, #0FEH
+    NOP
+    NOP
+    MOV A, P2
+    JNB ACC.4, KEY_4_PRESSED   ; K0被按下 -> 1
+    JNB ACC.5, KEY_3_PRESSED   ; K4被按下 -> 2
+    JNB ACC.6, KEY_2_PRESSED   ; K8被按下 -> 3
+    JNB ACC.7, KEY_1_PRESSED   ; K12被按下 -> 4
+    ; 无按键按下则直接返回（保持当前显示）
+    RET
 
-            ; 若容量已经是 0，则直接标记满载
-            MOV     A, R0
-            JZ      BIN0_MARK_FULL
+KEY_1_PRESSED:
+    ; K0 -> 清零后显示第1位 S
+    MOV 40H, #SEG_OFF
+    MOV 41H, #SEG_OFF
+    MOV 42H, #SEG_OFF
+    MOV 43H, #SEG_OFF
 
-            ; 成功投放一次，容量减 1
-            DEC     R0
-            MOV     A, R0
-            JNZ     BIN0_OPEN
+    MOV 40H, #SEG_S
+    MOV 44H, #01H
+    RET
 
-            ; 若减到 0，置满载标志并刷新 LED
-            ORL     20H, #01H
-            LCALL   UPDATE_FULL_LED
+KEY_2_PRESSED:
+    ; K4 -> 清零后显示第1、2位 S O
+    MOV 40H, #SEG_OFF
+    MOV 41H, #SEG_OFF
+    MOV 42H, #SEG_OFF
+    MOV 43H, #SEG_OFF
 
-BIN0_OPEN:
-            ; 开盖 8 秒后关盖
-            ANL     P1, #0FEH
-            LCALL   DELAY_8S
-            ORL     P1, #01H
-            LCALL   KEY_AUTO_RESET
-            LCALL   WAIT_RELEASE
-            LJMP    MAIN_LOOP
+    MOV 44H, #00H
+    MOV 40H, #SEG_S
+    MOV 41H, #SEG_O
+    RET
 
-BIN0_MARK_FULL:
-            ORL     20H, #01H
-            LCALL   UPDATE_FULL_LED
+KEY_3_PRESSED:
+    ; K8 -> 清零后显示第1、2、3位 S O E
+    MOV 40H, #SEG_OFF
+    MOV 41H, #SEG_OFF
+    MOV 42H, #SEG_OFF
+    MOV 43H, #SEG_OFF
+    MOV 44H, #00H
+    MOV 40H, #SEG_S
+    MOV 41H, #SEG_O
+    MOV 42H, #SEG_E
+    RET
 
-BIN0_DENY:
-            ; 拒绝时也等待按键释放，避免连发
-            LCALL   WAIT_RELEASE
-            LJMP    MAIN_LOOP
+KEY_4_PRESSED:
+    ; K12 -> 清零后显示第1~4位 S O E I（最终稳定显示）
+    MOV 40H, #SEG_OFF
+    MOV 41H, #SEG_OFF
+    MOV 42H, #SEG_OFF
+    MOV 43H, #SEG_OFF
+    MOV A, 44H
+    JZ K12_NO_DELAY
+    MOV 44H, #00H
+    LCALL STEP_DELAY
+    MOV 40H, #SEG_S
+    LCALL STEP_DELAY
 
-TRY_BIN1:
-            ; 若 bin1 已满（bit1=1），拒绝开盖
-            MOV     A, 20H
-            ANL     A, #02H
-            JNZ     BIN1_DENY
+    MOV 41H, #SEG_O
+    LCALL STEP_DELAY
 
-            ; 若容量已经是 0，则直接标记满载
-            MOV     A, R1
-            JZ      BIN1_MARK_FULL
+    MOV 42H, #SEG_E
+    LCALL STEP_DELAY
 
-            ; 成功投放一次，容量减 1
-            DEC     R1
-            MOV     A, R1
-            JNZ     BIN1_OPEN
+    MOV 43H, #SEG_I
+    LCALL STEP_DELAY
+    LCALL STEP_DELAY
+    LCALL STEP_DELAY
+    LCALL STEP_DELAY
+    LCALL STEP_DELAY
+    MOV 40H, #SEG_OFF
+    MOV 41H, #SEG_OFF
+    MOV 42H, #SEG_OFF
+    MOV 43H, #SEG_OFF
+    RET
 
-            ; 若减到 0，置满载标志并刷新 LED
-            ORL     20H, #02H
-            LCALL   UPDATE_FULL_LED
+K12_NO_DELAY:
+    MOV 44H, #00H
+    MOV 40H, #SEG_S
+    MOV 41H, #SEG_O
+    MOV 42H, #SEG_E
+    MOV 43H, #SEG_I
+    RET
 
-BIN1_OPEN:
-            ; 开盖 8 秒后关盖
-            ANL     P1, #0FDH
-            LCALL   DELAY_8S
-            ORL     P1, #02H
-            LCALL   KEY_AUTO_RESET
-            LCALL   WAIT_RELEASE
-            LJMP    MAIN_LOOP
+; 数码管动态显示子程序
+; 位选由 P0.6, P0.7 控制 (74HC139译码输出Y0~Y3)
+; 00->第1位，01->第2位，10->第3位，11->第4位
+; 段选由 P1 口控制 (共阴极，1亮0灭)
+DISPLAY:
+    ;第1位
+    MOV P1, #SEG_OFF   ; 先消隐
+    MOV A, P0
+    ANL A, #03FH       ; 清零 P0.6, P0.7 (编码00)
+    MOV P0, A
+    MOV P1, 40H        ; 送段码
+    LCALL DELAY_1MS
 
-BIN1_MARK_FULL:
-            ORL     20H, #02H
-            LCALL   UPDATE_FULL_LED
+    ;第2位
+    MOV P1, #SEG_OFF   ; 先消隐
+    MOV A, P0
+    ANL A, #03FH
+    ORL A, #40H        ; P0.6=1, P0.7=0 (编码01)
+    MOV P0, A
+    MOV P1, 41H
+    LCALL DELAY_1MS
 
-BIN1_DENY:
-            LCALL   WAIT_RELEASE
-            LJMP    MAIN_LOOP
+    ;第3位
+    MOV P1, #SEG_OFF   ; 先消隐
+    MOV A, P0
+    ANL A, #03FH
+    ORL A, #80H        ; P0.6=0, P0.7=1 (编码10)
+    MOV P0, A
+    MOV P1, 42H
+    LCALL DELAY_1MS
 
-TRY_BIN2:
-            MOV     A, 20H
-            ANL     A, #04H
-            JNZ     BIN2_DENY
+    ;第4位
+    MOV P1, #SEG_OFF   ; 先消隐
+    MOV A, P0
+    ANL A, #03FH
+    ORL A, #0C0H       ; P0.6=1, P0.7=1 (编码11)
+    MOV P0, A
+    MOV P1, 43H
+    LCALL DELAY_1MS
 
-            MOV     A, R2
-            JZ      BIN2_MARK_FULL
+    RET
 
-            DEC     R2
-            MOV     A, R2
-            JNZ     BIN2_OPEN
+; 1ms 软件延时子程序 (适用于动态刷新)
+DELAY_1MS:
+    MOV R7, #10
+D1: MOV R6, #50
+    DJNZ R6, $
+    DJNZ R7, D1
+    RET
 
-            ORL     20H, #04H
-            LCALL   UPDATE_FULL_LED
+; 逐步点亮时的可见延时（保持动态刷新）
+STEP_DELAY:
+    MOV R5, #80
+STEP_D1:
+    LCALL DISPLAY
+    DJNZ R5, STEP_D1
+    RET
 
-BIN2_OPEN:
-            ANL     P1, #0FBH
-            LCALL   DELAY_8S
-            ORL     P1, #04H
-            LCALL   KEY_AUTO_RESET
-            LCALL   WAIT_RELEASE
-            LJMP    MAIN_LOOP
-
-BIN2_MARK_FULL:
-            ORL     20H, #04H
-            LCALL   UPDATE_FULL_LED
-
-BIN2_DENY:
-            LCALL   WAIT_RELEASE
-            LJMP    MAIN_LOOP
-
-TRY_BIN3:
-            MOV     A, 20H
-            ANL     A, #08H
-            JNZ     BIN3_DENY
-
-            MOV     A, R3
-            JZ      BIN3_MARK_FULL
-
-            DEC     R3
-            MOV     A, R3
-            JNZ     BIN3_OPEN
-
-            ORL     20H, #08H
-            LCALL   UPDATE_FULL_LED
-
-BIN3_OPEN:
-            ANL     P1, #0F7H
-            LCALL   DELAY_8S
-            ORL     P1, #08H
-            LCALL   KEY_AUTO_RESET
-            LCALL   WAIT_RELEASE
-            LJMP    MAIN_LOOP
-
-BIN3_MARK_FULL:
-            ORL     20H, #08H
-            LCALL   UPDATE_FULL_LED
-
-BIN3_DENY:
-            LCALL   WAIT_RELEASE
-            LJMP    MAIN_LOOP
-
-; 伪随机子程序：返回 A=0~9
-; 思路：使用 TL0/TH0 做扰动，做若干异或与移位后，采用重复减 10 得到模 10
-RAND_0_9:
-            MOV     A, TL0
-            XRL     A, TH0
-            XRL     A, #05AH
-            RL      A
-            XRL     A, #01DH
-            RR      A
-            ANL     A, #01FH
-
-RAND_MOD10:
-            CLR     C
-            SUBB    A, #0AH
-            JNC     RAND_MOD10
-            ADD     A, #0AH
-            RET
-
-; 将 20H 的 bit0~bit3 同步到 P3.0~P3.3（P3 高四位保持原值）
-UPDATE_FULL_LED:
-            MOV     A, 20H
-            ANL     A, #0FH
-            MOV     21H, A
-
-            MOV     A, P3
-            ANL     A, #0F0H
-            ORL     A, 21H
-            MOV     P3, A
-            RET
-
-; 8 秒延时：80 次 100ms
-DELAY_8S:
-            MOV     R7, #80
-DELAY_8S_LOOP:
-            LCALL   DELAY_100MS
-            DJNZ    R7, DELAY_8S_LOOP
-            RET
-
-; 粗略 100ms 延时（按 12MHz 经典 8051 估算）
-DELAY_100MS:
-            MOV     R5, #166
-D100_OUTER:
-            MOV     R6, #200
-D100_INNER:
-            NOP
-            DJNZ    R6, D100_INNER
-            DJNZ    R5, D100_OUTER
-            RET
-
-; 等待 P2.7~P2.4 全部释放（都为 1）
-WAIT_RELEASE:
-            MOV     A, P2
-            ANL     A, #0F0H
-            CJNE    A, #0F0H, WAIT_RELEASE
-            RET
-
-; 关盖后自动将按键输入位复位为高电平状态（释放 P2.7~P2.4）
-KEY_AUTO_RESET:
-            ORL     P2, #0F0H
-            RET
-
-            END
+    END

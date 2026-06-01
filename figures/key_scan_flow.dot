@@ -1,0 +1,49 @@
+digraph KEY_SCAN_FLOW {
+  graph [rankdir=TB, splines=ortho, nodesep=0.45, ranksep=0.5, pad=0.1, bgcolor="white"];
+  node [shape=box, style="rounded,filled", fillcolor="#f2e4e4", color="#333333", fontname="Noto Serif CJK SC", fontsize=12, penwidth=1.2];
+  edge [color="#222222", arrowsize=0.8, penwidth=1.1, fontname="Noto Serif CJK SC", fontsize=11];
+
+  start [label="KEY_SCAN"];
+  scan [shape=box, style="filled", fillcolor="#e7e8f8", label="P2=0FEH\n读取 P2.4~P2.7"];
+
+  k1 [shape=diamond, style="filled", fillcolor="#e5f5e0", label="ACC.4=0?"];
+  k2 [shape=diamond, style="filled", fillcolor="#e5f5e0", label="ACC.5=0?"];
+  k3 [shape=diamond, style="filled", fillcolor="#e5f5e0", label="ACC.6=0?"];
+  k4 [shape=diamond, style="filled", fillcolor="#e5f5e0", label="ACC.7=0?"];
+
+  s1 [shape=box, style="filled", fillcolor="#e7e8f8", label="40H = S"];
+  s2 [shape=box, style="filled", fillcolor="#e7e8f8", label="40H~41H = S,O"];
+  s3 [shape=box, style="filled", fillcolor="#e7e8f8", label="40H~42H = S,O,E"];
+  s4a [shape=box, style="filled", fillcolor="#e7e8f8", label="清空缓存\n检测 44H"];
+  s4b [shape=diamond, style="filled", fillcolor="#e5f5e0", label="44H=0?"];
+  stable [shape=box, style="filled", fillcolor="#e7e8f8", label="稳定显示 SOEI"];
+  step [shape=box, style="filled", fillcolor="#e7e8f8", label="STEP_DELAY\n渐进显示"];
+  ret [shape=box, style="rounded,filled", fillcolor="#f2e4e4", label="返回"];
+
+  start -> scan;
+  scan -> k1;
+  k1 -> s1 [label="是"];
+  k1 -> k2 [label="否"];
+  k2 -> s2 [label="是"];
+  k2 -> k3 [label="否"];
+  k3 -> s3 [label="是"];
+  k3 -> k4 [label="否"];
+  k4 -> s4a [label="是"];
+  k4 -> ret [label="否"];
+
+  s4a -> s4b;
+  s4b -> stable [label="是"];
+  s4b -> step [label="否"];
+
+  s1 -> ret;
+  s2 -> ret;
+  s3 -> ret;
+  stable -> ret;
+  step -> ret;
+
+  {rank=same; s1; k1}
+  {rank=same; s2; k2}
+  {rank=same; s3; k3}
+  {rank=same; s4a; k4}
+  {rank=same; stable; s4b; step}
+}
