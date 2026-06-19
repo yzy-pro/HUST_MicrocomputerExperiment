@@ -1,11 +1,11 @@
 # Fdb version 4
-["xdvipdfmx"] 1781853169.19135 "PBL.xdv" "PBL.pdf" "PBL" 1781853171.37042 0
-  "PBL.xdv" 1781853169.13871 849196 914f98560e572f9f97836dbfa522631f "xelatex"
+["xdvipdfmx"] 1781855493.64403 "PBL.xdv" "PBL.pdf" "PBL" 1781855498.94412 0
+  "PBL.xdv" 1781855493.57674 864764 5c77a5838cf3eb4547c7b73867fb42db "xelatex"
   (generated)
   "PBL.pdf"
   (rewritten before read)
-["xelatex"] 1781853167.35937 "/home/yzy/code/MicrocomputerExperiment/PBL/PBL.tex" "PBL.xdv" "PBL" 1781853171.36908 0
-  "/home/yzy/code/MicrocomputerExperiment/PBL/PBL.tex" 1781853165.24821 27840 916d8055afc08c6559f98c62d0652258 ""
+["xelatex"] 1781855491.47529 "/home/yzy/code/MicrocomputerExperiment/PBL/PBL.tex" "PBL.xdv" "PBL" 1781855498.94263 0
+  "/home/yzy/code/MicrocomputerExperiment/PBL/PBL.tex" 1781855429.14359 29628 69003a1fd010bc58145c1e833e45a49f ""
   "/usr/local/texlive/2025/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/tfm/adobe/zapfding/pzdr.tfm" 1136768653 1528 f853c4d1b4e0550255e02831fdc8496f ""
   "/usr/local/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmmi12.tfm" 1136768653 1524 4414a8315f39513458b80dfc63bff03a ""
@@ -104,9 +104,9 @@
   "/usr/local/texlive/2025/texmf-dist/web2c/texmf.cnf" 1739380943 42148 61becc7c670cd061bb319c643c27fdd4 ""
   "/usr/local/texlive/2025/texmf-var/web2c/xetex/xelatex.fmt" 1745761497 5854851 9405beb4c6cd273e0bd26aa5e146f3e8 ""
   "/usr/local/texlive/2025/texmf.cnf" 1745761447.97632 455 5b996dcaa0eb4ef14a83b026bc0a008c ""
-  "PBL.aux" 1781853169.13724 7352 8f4d3a5bac481c697325fa876218e428 "xelatex"
-  "PBL.out" 1781853169.13824 4033 b7f3e6b6007906c51d72b0354ad078e8 "xelatex"
-  "PBL.tex" 1781853165.24821 27840 916d8055afc08c6559f98c62d0652258 ""
+  "PBL.aux" 1781855493.57535 9449 55cd9e78e91e558693ebecd95a8fe3ae "xelatex"
+  "PBL.out" 1781855493.57635 5026 4b805df55e247ddc3077d8d8ba536224 "xelatex"
+  "PBL.tex" 1781855429.14359 29628 69003a1fd010bc58145c1e833e45a49f ""
   "codes/Core/Inc/C8051F310.INC" 1779002735 15228 c6230d01f4a297cb3750cfcca5726db1 ""
   "codes/Core/Inc/reaction_game.inc" 1781850789.24494 2258 74a6b0f1fed490d37d2b48097ccb8bb7 ""
   "codes/Core/Src/display.asm" 1781850749.32646 3636 b07ae0717bd661d10b39b4ffb88b6f32 ""
@@ -127,6 +127,16 @@
   "figures/main_flow.png" 1781851961.18478 302366 e69892a5a9d8439f791f1b477a9a328a ""
   "figures/reaction_terminal_flow.png" 1781851961.94392 203584 b51138a36175fcdcab8f646e7936d848 ""
   "figures/rhythm_terminal_flow.png" 1781851962.77938 280662 73234808d8de3e877623e317b6420d11 ""
+  "figures/screenshots/1-1.png" 1781855244.89888 368315 f326d1d1aaca16e4cd255a04e184aaac ""
+  "figures/screenshots/1-2.png" 1781855255.24376 379473 2c3dd22d270b6e2397134a5774babc75 ""
+  "figures/screenshots/2-1.png" 1781855264.92613 362399 d1dd06def57b820078048984e0eb1d81 ""
+  "figures/screenshots/2-2.png" 1781855272.46975 363610 6eb0dcaaac5f87f911a541fd28efba46 ""
+  "figures/screenshots/3-1.png" 1781855279.92457 356375 2c1d85a653d60a3f2bab1dc1ac294439 ""
+  "figures/screenshots/3-2.png" 1781855286.65427 364504 2d91abb7ffa8ed806f7524c8ae1fd69d ""
+  "figures/screenshots/4-1.png" 1781855293.17857 384370 775400e10b9f4882f968e21334c6543e ""
+  "figures/screenshots/5-1.png" 1781855302.05683 390563 83db54589352e4a5fa09829a3eae3e3d ""
+  "figures/screenshots/5-2.png" 1781855308.21978 443158 e3db922691d4bf52c4cff9f6ed983b9e ""
+  "figures/screenshots/6-1.png" 1781855315.6549 350691 73b9f75c00f2d6322e81c850b2175ece ""
   "figures/system_architecture.png" 1781851963.50251 130460 245182eb169f2503649a675f80b2e4be ""
   (generated)
   "PBL.aux"
