@@ -1,0 +1,18 @@
+%%{init: {"theme": "base", "themeVariables": {"fontFamily": "Noto Sans CJK SC, Microsoft YaHei, Arial", "primaryColor": "#FFF7E6", "primaryBorderColor": "#B7791F", "lineColor": "#2D3748", "tertiaryColor": "#FFFBEB"}}}%%
+flowchart TD
+    A([反应模式终端]) --> B["待机显示 R000"]
+    B --> C{用户按键}
+    C -->|K15| D["切换到节奏模式"]
+    C -->|KINT| E["开始新一轮<br/>UART发送START<br/>蜂鸣短响"]
+    C -->|其他键| B
+    E --> F["随机等待1-2秒<br/>数码管显示----<br/>LED等待动画"]
+    F --> G{等待期间有按键?}
+    G -->|是| H["抢按失败<br/>显示FErr<br/>蜂鸣长响"]
+    G -->|否| I["显示目标数字0-9<br/>Timer2开始计时"]
+    I --> J{用户按K0-K9}
+    J -->|正确| K["锁存16位反应时间<br/>转换BCD显示ms<br/>UART发送SCORE"]
+    J -->|错误| H
+    J -->|超时| H
+    K --> L["保持成绩<br/>等待KINT下一轮"]
+    H --> L
+    L --> B

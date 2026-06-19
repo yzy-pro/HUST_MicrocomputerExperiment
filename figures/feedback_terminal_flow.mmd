@@ -1,0 +1,16 @@
+%%{init: {"theme": "base", "themeVariables": {"fontFamily": "Noto Sans CJK SC, Microsoft YaHei, Arial", "primaryColor": "#FDF2F8", "primaryBorderColor": "#BE185D", "lineColor": "#2D3748", "tertiaryColor": "#FFF1F2"}}}%%
+flowchart TD
+    A([反馈输出端流程]) --> B{反馈类型}
+    B -->|数码管| C["DISPLAY_SCAN<br/>按scan_digit轮流选通4位"]
+    C --> D["LOAD_SEG_CODE<br/>查SEG_TABLE输出段码"]
+    D --> E["P1输出段选<br/>P0.6/P0.7输出位选"]
+    B -->|LED流水灯| F["LED_PWM_SERVICE<br/>1/4占空比调光"]
+    F --> G["LED_WRITE_A<br/>P3.3送数据<br/>P3.4移位时钟"]
+    B -->|蜂鸣器| H["beep_count非零<br/>P3.1置高短响/长响"]
+    H --> I["Timer0每1ms递减<br/>归零后关闭蜂鸣器"]
+    B -->|UART| J["UART_SEND_START<br/>UART_SEND_SCORE<br/>UART_SEND_FAIL"]
+    J --> K["UART_PUTCHAR等待TI0<br/>通过SBUF0发送"]
+    E --> L["用户看到目标/成绩/错误"]
+    G --> L
+    I --> L
+    K --> M["电脑串口助手显示状态"]

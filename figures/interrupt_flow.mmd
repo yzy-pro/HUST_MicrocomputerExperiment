@@ -1,0 +1,18 @@
+%%{init: {"theme": "base", "themeVariables": {"fontFamily": "Noto Sans CJK SC, Microsoft YaHei, Arial", "primaryColor": "#F0FDFA", "primaryBorderColor": "#0F766E", "lineColor": "#2D3748", "tertiaryColor": "#F8FAFC"}}}%%
+flowchart TD
+    A([中断与时基流程]) --> B{中断来源}
+    B -->|Timer0 1ms| C["重装TH0/TL0"]
+    C --> D["DISPLAY_SCAN刷新数码管"]
+    D --> E["维护beep_count蜂鸣器"]
+    E --> F["LED_PWM_SERVICE调光输出"]
+    F --> G([RETI])
+    B -->|Timer2 1ms| H["清除TF2H/TF2L"]
+    H --> I["递减wait_tick/wait_hi"]
+    I --> J["timing_flag=1时<br/>react_lo/react_hi递增"]
+    J --> K["节奏模式下递减rhythm_tick"]
+    K --> L{rhythm_tick为0?}
+    L -->|是| M["按难度重装节拍<br/>LED模式左移"]
+    L -->|否| N([RETI])
+    M --> N
+    B -->|INT0| O["当前版本KINT主循环扫描<br/>INT0_ISR直接返回"]
+    O --> P([RETI])

@@ -1,0 +1,16 @@
+%%{init: {"theme": "base", "themeVariables": {"fontFamily": "Noto Sans CJK SC, Microsoft YaHei, Arial", "primaryColor": "#EEF2FF", "primaryBorderColor": "#4F46E5", "lineColor": "#2D3748", "tertiaryColor": "#F8FAFC"}}}%%
+flowchart TD
+    A([键盘输入端流程]) --> B["SCAN_KEY_RAW<br/>R4=行号 R5=行扫描码"]
+    B --> C["P2低四位逐行拉低<br/>高四位读取列输入"]
+    C --> D{列输入是否出现低电平?}
+    D -->|否| E{4行扫描完成?}
+    E -->|否| F["切换下一行"]
+    F --> C
+    E -->|是| G["返回KEY_NONE"]
+    D -->|是| H["判断P2.4-P2.7<br/>得到列号R6"]
+    H --> I["键值 = 列号*4 + 行号"]
+    I --> J["DEBOUNCE_DELAY<br/>再次读取确认"]
+    J --> K{前后键值一致?}
+    K -->|是| L["返回有效键值K0-K15"]
+    K -->|否| G
+    L --> M["主循环分发<br/>KINT开始<br/>K10-K12难度<br/>K15模式<br/>K0-K9作答"]

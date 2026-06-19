@@ -1,0 +1,21 @@
+%%{init: {"theme": "base", "themeVariables": {"fontFamily": "Noto Sans CJK SC, Microsoft YaHei, Arial", "primaryColor": "#EAF4FF", "primaryBorderColor": "#2B6CB0", "lineColor": "#2D3748", "tertiaryColor": "#F7FAFC"}}}%%
+flowchart TD
+    A([上电复位]) --> B["START<br/>关闭看门狗<br/>初始化端口/Timer/UART"]
+    B --> C["CLEAR_DISPLAY<br/>初始化状态变量"]
+    C --> D["MAIN_LOOP<br/>扫描KINT和矩阵键盘"]
+    D --> E{当前状态}
+    E -->|ST_IDLE| F["待机显示<br/>R000或Lx00"]
+    E -->|ST_WAIT| G["反应模式随机等待<br/>抢按则失败"]
+    E -->|ST_SHOW| H["显示目标数字<br/>清零反应计时"]
+    E -->|ST_PLAY| I{游戏模式}
+    I -->|MODE_REACT| J["反应模式<br/>判断目标键/超时"]
+    I -->|MODE_RHYTHM| K["节奏模式<br/>判断K0和目标灯"]
+    E -->|ST_SUCCESS| L["成功反馈<br/>显示成绩/点亮LED"]
+    E -->|ST_FAIL| M["失败反馈<br/>显示FErr/长鸣"]
+    F --> D
+    G --> D
+    H --> D
+    J --> D
+    K --> D
+    L --> D
+    M --> D

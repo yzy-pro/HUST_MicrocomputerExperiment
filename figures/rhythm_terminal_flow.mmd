@@ -1,0 +1,24 @@
+%%{init: {"theme": "base", "themeVariables": {"fontFamily": "Noto Sans CJK SC, Microsoft YaHei, Arial", "primaryColor": "#ECFDF5", "primaryBorderColor": "#047857", "lineColor": "#2D3748", "tertiaryColor": "#F0FDF4"}}}%%
+flowchart TD
+    A([节奏模式终端]) --> B["待机显示 Lx00"]
+    B --> C{用户按键}
+    C -->|K10| D["低难度<br/>220ms/步"]
+    C -->|K11| E["中难度<br/>160ms/步"]
+    C -->|K12| F["高难度<br/>90ms/步"]
+    C -->|K15| G["切换到反应模式"]
+    C -->|KINT| H["随机生成目标灯D1-D8<br/>分数清零<br/>UART发送START"]
+    D --> B
+    E --> B
+    F --> B
+    G --> B
+    H --> I["Timer2按难度推进LED流水灯<br/>数码管显示LxSS"]
+    I --> J{用户按K0?}
+    J -->|目标灯亮时按下| K["得分+1<br/>蜂鸣短响<br/>刷新SS"]
+    J -->|非目标灯或其他键| L["失败<br/>显示FErr<br/>蜂鸣长响"]
+    J -->|未按| I
+    K --> M{分数达到20?}
+    M -->|否| I
+    M -->|是| N["通关成功<br/>LED全亮<br/>保持结果"]
+    L --> O["等待KINT下一轮"]
+    N --> O
+    O --> B

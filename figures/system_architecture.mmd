@@ -1,0 +1,28 @@
+%%{init: {"theme": "base", "themeVariables": {"fontFamily": "Noto Sans CJK SC, Microsoft YaHei, Arial", "primaryColor": "#EAF4FF", "primaryBorderColor": "#2B6CB0", "lineColor": "#2D3748", "tertiaryColor": "#F7FAFC"}}}%%
+flowchart LR
+    MCU["C8051F310<br/>主控制器"]
+
+    subgraph INPUT["输入端"]
+        KBD["4x4矩阵键盘<br/>P2.0-P2.7"]
+        KINT["KINT外部触发键<br/>P0.1"]
+        FUNC["功能键<br/>K10-K12难度<br/>K15模式"]
+    end
+
+    subgraph OUTPUT["输出端"]
+        SEG["4位数码管<br/>P1段选 + P0.6/P0.7位选"]
+        LED["8位LED流水灯<br/>P3.3 DATA / P3.4 CLK"]
+        BUZ["蜂鸣器<br/>P3.1"]
+    end
+
+    subgraph COMM["通信端"]
+        UART["UART0<br/>P0.4 TXD / P0.5 RXD"]
+        PC["电脑串口助手<br/>状态监视"]
+    end
+
+    KBD --> MCU
+    KINT --> MCU
+    FUNC --> MCU
+    MCU --> SEG
+    MCU --> LED
+    MCU --> BUZ
+    MCU --> UART --> PC
