@@ -1,0 +1,309 @@
+% !TEX program = xelatex
+% !TeX program = xelatex
+\documentclass[12pt,a4paper]{article}
+\usepackage[UTF8, heading=true]{ctex}
+\usepackage{geometry}
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{listings}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows, positioning, calc}
+\lstset{
+    basicstyle=\small\ttfamily,
+    breaklines=true,
+    columns=flexible,
+    keepspaces=true
+}
+% 页边距设置
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+% 字体与行距设置
+\ctexset{
+    section = { format=\bfseries\large },
+    subsection = { format=\bfseries\normalsize }
+}
+\linespread{1.5}
+\fontsize{10.5pt}{12pt}\selectfont
+
+\begin{document}
+% 标题
+\begin{center}
+    \textbf{ 基于8051F310单片机的垃圾分类系统设计}
+\end{center}
+
+% 基本信息
+\noindent
+\textbf{成  绩}\hspace{4cm} \textbf{指导教师}：罗志祥 \\
+\textbf{专业班级}：光电信息科学与工程202409 \hspace{1cm} \textbf{姓  名}：陈恪瑾 \hspace{1cm} \textbf{学  号}：U202413925 \\
+\textbf{联系电话}：18571851291
+
+\section{任务要求}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth,height=0.8\textheight,keepaspectratio]{figures/requirements/image1.png}
+    \caption{工作场景：小区垃圾回收系统}
+\end{figure}
+\subsection{实验目的}
+\begin{itemize}
+    \item 熟悉 C8051F310 单片机实验平台的 I/O 口、矩阵键盘、数码管、流水灯和蜂鸣器等外设资源的配置方法；
+    \item 掌握 4 位数码管动态扫描显示、4$\times$4 矩阵键盘扫描与消抖、74HCT164 串行驱动流水灯等常用接口程序设计方法；
+    \item 理解定时器中断和外部中断的工作机制，能够利用 Timer0 构造 1ms 系统节拍，并在主循环状态机中完成倒计时、闪烁和报警等并发任务；
+    \item 通过完整汇编程序的编写、构建与调试，提升对模块化程序结构、共享 RAM 状态变量和嵌入式系统故障定位方法的掌握程度。
+\end{itemize}
+
+\subsection{实验内容}
+本设计基于 C8051F310EVM 实验平台，采用 MCS-51 汇编语言实现小区智能垃圾分类回收系统。系统以四位数码管显示四类垃圾桶剩余容量，以 F1--F4 分类按键完成开盖与投递，以 Timer0 和外部中断分别完成精确定时及提前关盖控制。具体要求如下。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth,height=0.8\textheight,keepaspectratio]{figures/requirements/image2.png}
+    \caption{开发板示意图}
+\end{figure}
+
+\subsubsection*{基础部分（满分85）}
+\begin{itemize}
+    \item 系统将生活垃圾分为“塑料纸张”、“玻璃金属”、“厨余垃圾”和“危害垃圾”四类。上电初始化后，程序随机生成 4 个 $0\sim9$ 的整数，分别作为四个垃圾桶的剩余可投放容量，并在四位数码管上同时显示。
+    \item 用户按下 K10--K13（F1--F4）中的某一分类键选择对应垃圾桶。若该桶剩余容量为 0，则认为垃圾桶已满，蜂鸣器鸣响约 1s，对应数码管显示字母 F（FULL），提示结束后恢复原容量显示，桶盖不开启。
+    \item 若所选垃圾桶仍有剩余容量，则系统打开对应桶盖，D9 指示灯点亮，开盖时间设定为 8s；开盖期间，对应数码管以 5Hz 频率闪烁，显示该桶当前剩余容量。
+    \item 在桶盖打开的 8s 内，用户再次按下同一个分类键表示投入 1 袋垃圾，系统将该桶容量减 1；该操作可重复执行，直至投放完成或容量减至 0。
+    \item 桶盖计时由 Timer0 中断完成。程序以 1ms 为系统节拍维护 16 位倒计时变量，要求开盖 8s 后自动关闭桶盖，D9 指示灯熄灭，选中数码管停止闪烁。
+\end{itemize}
+
+\subsection{提高部分（申优选做，85分以上）}
+在基本功能基础上，当前程序进一步实现了以下扩展功能：
+\begin{itemize}
+    \item 任一垃圾桶被选择后，四位数码管仍同时刷新显示全部垃圾桶状态；其中被选中的桶位通过 5Hz 闪烁突出显示，未选中的桶位保持正常容量显示。
+    \item 桶盖开启期间，流水灯 D1--D8 作为 8s 倒计时进度条显示剩余开盖时间：开盖初始全亮，随后按秒级阈值逐格熄灭，倒计时结束后全部熄灭。
+    \item 开盖期间支持 K1--K9 数字键批量投放。按下数字键 $n$ 表示一次投入 $n$ 袋垃圾；若当前容量足够，则容量立即减 $n$；若投入袋数超过剩余容量，则蜂鸣器鸣响约 1s，对应数码管显示 E（ERROR），并关闭桶盖拒绝本次投放。
+    \item 若用户在 8s 内已完成投放，可按 Kint 外部中断键提前关盖。外部中断服务程序立即清除开盖状态和倒计时变量，使 D9 与 D1--D8 熄灭，系统返回待机状态。
+    \item 增加物业维护功能：按下 K15（F6）后，四个垃圾桶容量统一恢复为 9，同时关闭当前开盖状态并鸣响蜂鸣器作为确认。
+    \item 增加计算器个性化功能：按下 K14（F5）进入计算器模式，K0--K9 输入数字，K10--K13 分别表示加、减、乘、除，K15（F6）执行等号运算，K14（F5）用于退格或返回上一步，Kint 用于退出计算器模式并恢复垃圾分类系统。
+\end{itemize}
+
+\section{设计思路}
+本系统基于 AT89S52 单片机与 Proteus 仿真平台，采用“大循环轮询状态机 + 定时器/外部中断并行处理”的无阻塞架构。程序以状态标志（桶盖状态、满载标志等）与容量缓存（30H$\sim$33H）为核心，将定时与业务逻辑解耦，整体设计逻辑如下：
+\begin{enumerate}
+    \item \textbf{系统初始化与随机容量生成模块}：启动后设置定时器、I/O 模式及相关变量，并执行一段利用定时器自由运行搭配引脚状态求异或作为熵源的指令循环。经过除法、乘法运算后，生成 4 个 $0\sim9$ 的数字作为四个垃圾桶的初始剩余容量。
+    \item \textbf{多任务定时器中断模块}：开启基于定时器 0 的 1ms 中断（\texttt{T0\_ISR}）。在中断内对不同时间任务并发处理：8 秒垃圾桶开盖独立倒计时、1 秒满载字幕（F）提示倒计时，以及数码管 5Hz 闪烁控制的基础翻转时钟（每 100ms 翻转一次标志位 \texttt{BLKFLG}）。
+    \item \textbf{外部快速中断抢占模块}：采用下降沿触发的外部中断 0（\texttt{EXT0\_ISR}）。在有效开盖的 8 秒倒计时生命周期内，一旦用户按下中断键，程序即可打断主循环立刻清零开盖倒计状态及关闭指示灯（\texttt{D9}），恢复至待机状态。
+    \item \textbf{键盘扫描与智能判决模块}：\texttt{SCAN\_KEY} 函数持续扫描 4$\times$4 矩阵键盘，包含延时消抖、行列读值等处理，返回按下的逻辑键位。主循环依据该键值结合当前盖子状态执行业务规则：待机且有余量时激活开盖任务；满载时激活“F”全显告警；处于开盖期同类再按则执行剩余容量扣减 1。
+    \item \textbf{动态数码管显像与掩码覆盖模块}：\texttt{REFRESH\_ALL} 采用分时复用刷新 4 位数码管。每一位的刷新均受到“满载锁定掩码（\texttt{FULLBIN}）”、“选中目标及频闪标识（\texttt{BLKFLG}）”修饰控制，从而平滑实现正常数字、字母“F”或 100ms亮灭间隔的数码管 5Hz 闪烁切换，彻底抑制阻塞带来的重影异常。
+    \item \textbf{LED 流水进度条串口驱动模块}：主循环依 8 秒（8000ms）倒计时的边界阈值分拆为 8 个等级获取亮灯数量。提取相应的亮灯掩模后，采用软件模拟 SPI 数据时序的形式发出节拍信号（\texttt{P3.3/P3.4}），通过 74HC164 串行移位寄存器并行驱动 8 个 LED （\texttt{D1$\sim$D8}）同步展示倒计时刻度。
+\end{enumerate}
+
+\section{资源分配}
+\subsection{I/O口硬件资源分配}
+\begin{table}[H]
+    \centering
+    \small
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        I/O引脚 & 方向 & 功能定义 & 有效电平 \\
+        \hline
+        P0.0 & 输出 & D9 桶盖开启指示灯控制 & 低电平开启 \\
+        \hline
+        P0.6, P0.7 & 输出 & 74HC139 数码管位选地址线 & 低电平脉冲配合翻译 \\
+        \hline
+        P1.0$\sim$P1.7 & 输出 & 数码管段码输出（A$\sim$DP） & 低电平驱动显示 \\
+        \hline
+        P2.0$\sim$P2.3 & 输出 & 键盘行线扫描 & 低电平使能 \\
+        \hline
+        P2.4$\sim$P2.7 & 输入 & 键盘列线检测 & 低电平有效 \\
+        \hline
+        P3.2 (INT0) & 输入 & 外部中断 0 触发键（提前关盖） & 下降沿触发 \\
+        \hline
+        P3.3 & 输出 & 74HC164 串行数据输出（DAT） & 高低电平动态输出 \\
+        \hline
+        P3.4 & 输出 & 74HC164 移位时钟输出（CLK） & 上升沿脉冲触发 \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\subsection{寄存器资源分配}
+\begin{table}[H]
+    \centering
+    \small
+    \begin{tabular}{|c|c|}
+        \hline
+        寄存器 & 功能定义 \\
+        \hline
+        SP & 堆栈指针，初始化为 \texttt{5FH} \\
+        \hline
+        A, B & 数据中转、数学乘除运算（容量随机化计算）、状态及延时比较等 \\
+        \hline
+        DPTR & 映射表与段码查表基址指针 \\
+        \hline
+        R0 & \texttt{SHIFT\_LED\_BAR} 流水灯 8 位移位的循环控制计数器 \\
+        \hline
+        R5, R6, R7 & 数码管单字符延时（\texttt{DELAY\_DIG}）与按键消抖的内层与外层计数器 \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\subsection{片内RAM资源分配}
+\begin{table}[H]
+    \centering
+    \small
+    \begin{tabular}{|c|c|}
+        \hline
+        存储单元 & 功能定义 \\
+        \hline
+        30H$\sim$33H & \texttt{CAP0$\sim$CAP3} 暂存四个分类垃圾桶的剩余容量（初始化赋 $0\sim9$） \\
+        \hline
+        34H, 35H & \texttt{KEYNOW}, \texttt{KEYLAST} 用于保存及判断双边沿防连按防抖的键号 \\
+        \hline
+        39H, 3BH & \texttt{LEDREG}, \texttt{LASTBAR} 存放将要推入与前次推入 74HC164 的掩码态 \\
+        \hline
+        42H, 43H & \texttt{LIDLO}, \texttt{LIDHI} 组成双字节作为 8 秒（8000ms）主业务关盖倒计时器 \\
+        \hline
+        44H, 45H & \texttt{BLKDIV}, \texttt{BLKFLG} 用于累加计算 100ms 阈值与倒转产生的 5Hz 发光控制 \\
+        \hline
+        46H, 47H & \texttt{HINTLO}, \texttt{HINTHI} 组成双字节作为 1 秒 “F”（FULL）报错的阻塞倒数 \\
+        \hline
+        4DH, 4EH & \texttt{LIDOPEN}, \texttt{SELBIN} 保存当前盖子开启标志极性态与正在受理的舱位 \\
+        \hline
+        4FH & \texttt{FULLBIN} 保存当前容量为空无法继续时被点名弹出满载报错显示的舱号 \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\newpage
+\section{流程图}
+\subsection{主程序状态轮询架构流程图}
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.95\textwidth,height=0.8\textheight,keepaspectratio]{figures/main_flow.png}
+%     \caption{主程序状态轮询与判别流图}
+% \end{figure}
+
+\newpage
+\subsection{定时器/外部中断并行处理流程图}
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.95\textwidth,height=0.85\textheight,keepaspectratio]{figures/t0_isr_flow.png}
+%     \caption{定时器 0 多任务时延中断处理}
+% \end{figure}
+
+\newpage
+\subsection{动态掩码刷新流图}
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.95\textwidth,height=0.85\textheight,keepaspectratio]{figures/refresh_flow.png}
+%     \caption{附带全屏锁定覆盖、闪烁覆盖的新型动态扫描流图}
+% \end{figure}
+\clearpage
+
+\section{源代码 （含文件头说明、语句行注释）}
+% \lstinputlisting[language={[x86masm]Assembler}]{codes/STARTUP.asm}
+
+\section{程序测试方法与结果}
+本节在 Proteus 仿真环境下对智能垃圾分类投放系统的各项功能进行测试，重点验证随机容量生成、开盖逻辑、容量递减、满载提示、倒计时流水灯进度条及外部中断提前关盖等功能的正确性。
+
+\subsection{测试方法}
+\begin{enumerate}
+    \item \textbf{初始化容量生成测试}：系统上电或复位后，观察四位数码管是否随机生成 $0\sim9$ 的数字，流水灯 D1$\sim$D8 及指示灯 D9 处于熄灭状态。
+    \item \textbf{正常投放开盖及频闪测试}：当对应类别存在剩余容量时，按下键盘对应组键，检查 D9 开启、且该对应数码管是否以 5Hz 频率闪烁、流水灯 D1$\sim$D8 是否全亮。
+    \item \textbf{投放容量递减测试}：在开盖倒计时 8 秒期间，再次按下同一按键，观察闪烁中的数码管对应的容量数字是否递减 1。
+    \item \textbf{硬件倒计时及打断测试}：观察流水灯是否随着 8 秒时间流逝逐格熄灭。开盖期间点击外部中断按键，观察盖子和流水灯是否即刻关闭。
+    \item \textbf{满载报错全显闪现测试}：针对容量为 0 的垃圾分类，在待机时按下按键，观察数码管对应位是否短暂显示字母 F 并持续 1 秒后恢复。
+\end{enumerate}
+
+\subsection{测试结果}
+\textbf{（1）上电随机容量显示测试}
+
+\noindent 操作：系统上电运行。\\
+预期：四位数码管显示 4 位独立生成的随机数（例如“2 5 8 1”），指示灯全灭。\\
+结果：符合预期。
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.78\textwidth]{figures/figure1.png}
+%     \caption{随机生成初始垃圾桶容量测试}
+% \end{figure}
+
+\textbf{（2）投放开盖与频闪进度条激活测试}
+
+\noindent  操作：按下一个有余量的分类对应按键。\\
+预期：D9 灯亮模拟开盖，选中的数码管数字开始闪烁，D1$\sim$D8 流水灯全亮。\\
+结果：符合预期。
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.78\textwidth]{figures/figure2.png}
+%     \caption{开盖发光与闪烁提示测试}
+% \end{figure}
+
+\textbf{（3）舱室容量动态扣减测试}
+
+\noindent  操作：在上述开盖期间，再次按下该分类对应的按键。\\
+预期：正在闪烁的数码管容量减 1，其它状态及计数不变。\\
+结果：符合预期。
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.78\textwidth]{figures/figure3.png}
+%     \caption{容量递减动态测试}
+% \end{figure}
+
+\textbf{（4）进度条流失与提前中止中断测试}
+
+\noindent  操作：不操作按键等待进度条自然熄灭；随后再次开盖，途中按下外部中断按钮。\\
+预期：进度条随秒数等比递减，直到熄灭（自动关盖）；有外部中断触发时，倒数全盘清空并立刻关盖息屏。\\
+结果：符合预期。
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.78\textwidth]{figures/figure4.png}
+%     \caption{进度条变化与抢占关盖测试}
+% \end{figure}
+
+\textbf{（5）满载报错提示拦截测试}
+
+\noindent  操作：将某分类垃圾桶容量扣减为 0，桶盖关闭待机。此时在此分类下尝试二次投递按键。\\
+预期：系统拒绝开盖，流水灯不亮，在对应的数码管暂留 “F” （FULL）警告，约 1 秒后自动消失并恢复原本数字 0 的空闲显示。\\
+结果：符合预期。
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.78\textwidth]{figures/figure5.png}
+%     \caption{满载无余量（F）警告拦截测试}
+% \end{figure}
+
+综上所述，程序完整且流畅地实现了在多按键输入场景下的各类垃圾存放分配功能。单片机依靠其内外部中断系统与状态机轮询完美承接了题目所要求的进度条和闪烁控制等所有加分冲优任务，逻辑判定响应均无短频或明显时延。
+
+
+
+
+\section{实验问题分析与对策}
+
+\begin{enumerate}
+        \item \textbf{Proteus仿真软件存在bug}：
+    \begin{itemize}
+        \item \textbf{原因分析}：Proteus仿真软件存在bug，无论如何修改代码，Proteus对于按键的输入引脚电平计算有误，相同的代码和工程文件在另一台电脑上即可正常运行。
+        \item \textbf{对策}：借助同学的电脑进行，完成实验。
+    \end{itemize}
+
+    \item \textbf{数码管显示字形与预期不符}：
+    \begin{itemize}
+        \item \textbf{原因分析}：段码与电路接线顺序不匹配，数字显示不正常。
+        \item \textbf{对策}：对照原理图逐一确认 P1.0$\sim$P1.7 分别对应 DP、G、F、E、D、C、B、A 引脚，重新计算共阴极段码：S=0B6H、O=0FCH、E=09EH、I=060H，验证后问题解决。
+    \end{itemize}
+
+    \item \textbf{按键扫描的逻辑不正确}：
+    \begin{itemize}
+        \item \textbf{原因分析}：理论上按键在扫描时应该将P2.0$\sim$P2.3依次置低，读取P2.4$\sim$P2.7的状态来判断按键，但实际代码中将电平逻辑反了，而硬件连接不支持另一种电平逻辑，导致按键状态无法正确识别。
+        \item \textbf{对策}：修改按键扫描代码，将P2.0$\sim$P2.3置低时读取P2.4$\sim$P2.7的状态进行判断，确保按键输入能够正确映射到显示缓存的更新。
+    \end{itemize}
+
+\end{enumerate}
+
+\vspace{2cm}
+\noindent
+本人承诺:本报告内容真实，无伪造数据，无抄袭他人成果。本人完全了解学校相关规定，如若违反，愿意承担其后果。
+
+\vspace{1cm}
+\noindent
+签字：\hspace{3cm} 陈恪瑾 \hspace{3cm} 2026年4月26日
+
+\end{document}
