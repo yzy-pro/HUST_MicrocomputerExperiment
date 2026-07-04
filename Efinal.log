@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.4.27)  4 JUL 2026 13:14
+This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.4.27)  4 JUL 2026 13:19
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -645,11 +645,12 @@ Package fontspec Info:
 (fontspec)             - 'normal' (m/n) with NFSS spec.:
 (fontspec)             <->"[FandolFang-Regular.otf]/OT:script=hani;language=dflt;"
 
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <10.95> on input line 100.
 
 
 [4]
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <10.95> on input line 115.
+
 
 [5]
 
@@ -659,25 +660,27 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 
 [8]
 
-[9
+[9]
+
+[10
 
 ]
 
-[10]
+[11]
 
-[11] (./Efinal.aux)
+[12] (./Efinal.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2022/08/05>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 20914 strings out of 470267
- 522527 string characters out of 5484665
- 874355 words of memory out of 5000000
- 47209 multiletter control sequences out of 15000+600000
+ 20896 strings out of 470267
+ 521185 string characters out of 5484665
+ 877355 words of memory out of 5000000
+ 47191 multiletter control sequences out of 15000+600000
  632869 words of font info for 80 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 93i,9n,112p,502b,382s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 93i,9n,112p,502b,378s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on Efinal.xdv (11 pages, 89060 bytes).
+Output written on Efinal.xdv (12 pages, 107264 bytes).
