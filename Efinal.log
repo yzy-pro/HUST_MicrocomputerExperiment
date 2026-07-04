@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.4.27)  4 JUL 2026 13:19
+This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.4.27)  4 JUL 2026 13:22
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -651,8 +651,33 @@ Package fontspec Info:
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <10.95> on input line 115.
 
+Underfull \hbox (badness 5189) in paragraph at lines 123--124
+[]\TU/lmr/m/n/10.95 00–11 \TU/FandolSong-Regular(0)/m/n/10.95 选 择 第
+ []
+
+
+Underfull \hbox (badness 5231) in paragraph at lines 127--128
+[]\TU/FandolSong-Regular(0)/m/n/10.95 当 前 扫 描 行 拉
+ []
+
+
+Underfull \hbox (badness 5231) in paragraph at lines 129--130
+[]\TU/FandolSong-Regular(0)/m/n/10.95 按 下 时 为 低 电
+ []
+
+
 
 [5]
+Underfull \hbox (badness 10000) in paragraph at lines 170--170
+[]\TU/lmr/m/n/10.95 P0MDOUT–
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 170--170
+\TU/lmr/m/n/10.95 XBR1, OSCICN,
+ []
+
+
 
 [6]
 
@@ -662,25 +687,29 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 
 [9]
 
-[10
-
-]
+[10]
 
 [11]
 
-[12] (./Efinal.aux)
+[12
+
+]
+
+[13]
+
+[14] (./Efinal.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2022/08/05>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 20896 strings out of 470267
- 521185 string characters out of 5484665
+ 20854 strings out of 470267
+ 517979 string characters out of 5484665
  877355 words of memory out of 5000000
- 47191 multiletter control sequences out of 15000+600000
+ 47149 multiletter control sequences out of 15000+600000
  632869 words of font info for 80 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 93i,9n,112p,502b,378s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 93i,11n,112p,502b,378s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on Efinal.xdv (12 pages, 107264 bytes).
+Output written on Efinal.xdv (14 pages, 120176 bytes).

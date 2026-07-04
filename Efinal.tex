@@ -112,25 +112,27 @@
 \begin{table}[H]
     \centering
     \small
-    \begin{tabular}{|c|c|c|c|}
+    \begin{tabular}{|p{2.2cm}|p{1.2cm}|p{7.2cm}|p{2.6cm}|}
         \hline
         I/O引脚 & 方向 & 功能定义 & 有效电平 \\
         \hline
-        P0.0 & 输出 & D9 桶盖开启指示灯控制 & 低电平开启 \\
+        P0.0 & 输出 & D9 桶盖开启状态指示灯 & 低电平点亮 \\
         \hline
-        P0.6, P0.7 & 输出 & 74HC139 数码管位选地址线 & 低电平脉冲配合翻译 \\
+        P0.1 / INT0 & 输入 & Kint 外部中断键，用于提前关盖或退出计算器模式 & 下降沿触发 \\
         \hline
-        P1.0$\sim$P1.7 & 输出 & 数码管段码输出（A$\sim$DP） & 低电平驱动显示 \\
+        P0.6, P0.7 & 输出 & 四位数码管位选地址线 BA & 00--11 选择第 0--3 位 \\
         \hline
-        P2.0$\sim$P2.3 & 输出 & 键盘行线扫描 & 低电平使能 \\
+        P1.0$\sim$P1.7 & 输出 & 数码管段码输出（dp,g,f,e,d,c,b,a 对应位序） & 高电平点亮 \\
         \hline
-        P2.4$\sim$P2.7 & 输入 & 键盘列线检测 & 低电平有效 \\
+        P2.0$\sim$P2.3 & 输出 & 4$\times$4 矩阵键盘行扫描线 & 当前扫描行拉低 \\
         \hline
-        P3.2 (INT0) & 输入 & 外部中断 0 触发键（提前关盖） & 下降沿触发 \\
+        P2.4$\sim$P2.7 & 输入 & 4$\times$4 矩阵键盘列检测线 & 按下时为低电平 \\
         \hline
-        P3.3 & 输出 & 74HC164 串行数据输出（DAT） & 高低电平动态输出 \\
+        P3.1 & 输出 & 蜂鸣器控制信号 & 高电平鸣响 \\
         \hline
-        P3.4 & 输出 & 74HC164 移位时钟输出（CLK） & 上升沿脉冲触发 \\
+        P3.3 & 输出 & 74HCT164 串行数据输入 DAT，用于 D1--D8 流水灯 & 逐位输出 LED 掩码 \\
+        \hline
+        P3.4 & 输出 & 74HCT164 移位时钟 CLK，用于 D1--D8 流水灯 & 上升沿移位 \\
         \hline
     \end{tabular}
 \end{table}
@@ -139,19 +141,33 @@
 \begin{table}[H]
     \centering
     \small
-    \begin{tabular}{|c|c|}
+    \begin{tabular}{|p{3.8cm}|p{11.2cm}|}
         \hline
         寄存器 & 功能定义 \\
         \hline
-        SP & 堆栈指针，初始化为 \texttt{5FH} \\
+        ACC(A) & 主要累加器，用于键值判断、容量计算、段码查表、倒计时比较和中断临时运算 \\
         \hline
-        A, B & 数据中转、数学乘除运算（容量随机化计算）、状态及延时比较等 \\
+        B & 与 ACC 配合完成随机容量生成中的乘除法、计算器运算以及十进制拆分 \\
         \hline
-        DPTR & 映射表与段码查表基址指针 \\
+        DPTR & 指向 ROM 查找表，包括数码管段码表、流水灯掩码表和键盘重映射表 \\
         \hline
-        R0 & \texttt{SHIFT\_LED\_BAR} 流水灯 8 位移位的循环控制计数器 \\
+        R0 & 间接寻址指针或循环计数器，在容量数组访问与 74HCT164 移位输出中使用 \\
         \hline
-        R5, R6, R7 & 数码管单字符延时（\texttt{DELAY\_DIG}）与按键消抖的内层与外层计数器 \\
+        R2 & 投放袋数参数，传递给 \texttt{HANDLE\_BAGS} 判断容量是否足够 \\
+        \hline
+        R3 & 临时保存当前垃圾桶编号，用于容量不足时恢复错误显示桶号 \\
+        \hline
+        R4, R5, R6 & 数码管消隐延时、计算器结果拆位和短延时循环中的临时寄存器 \\
+        \hline
+        R7 & 键盘消抖延时循环计数器 \\
+        \hline
+        PSW & 程序状态字，在中断服务程序中入栈保护，避免影响主程序状态 \\
+        \hline
+        TH0, TL0 & Timer0 高低字节寄存器，重装 \texttt{0xF806} 形成约 1ms 中断节拍 \\
+        \hline
+        TMOD, TCON, IE & 定时器工作方式、外部中断触发方式以及中断允许控制寄存器 \\
+        \hline
+        P0MDOUT--P3MDOUT, P2MDIN, XBR1, OSCICN, PCA0MD & C8051F310 端口模式、交叉开关、内部振荡器和看门狗相关配置寄存器 \\
         \hline
     \end{tabular}
 \end{table}
@@ -160,25 +176,41 @@
 \begin{table}[H]
     \centering
     \small
-    \begin{tabular}{|c|c|}
+    \begin{tabular}{|p{3.2cm}|p{11.8cm}|}
         \hline
         存储单元 & 功能定义 \\
         \hline
-        30H$\sim$33H & \texttt{CAP0$\sim$CAP3} 暂存四个分类垃圾桶的剩余容量（初始化赋 $0\sim9$） \\
+        30H$\sim$33H & \texttt{CAP0$\sim$CAP3}，四个分类垃圾桶的剩余容量，取值范围为 $0\sim9$ \\
         \hline
-        34H, 35H & \texttt{KEYNOW}, \texttt{KEYLAST} 用于保存及判断双边沿防连按防抖的键号 \\
+        34H, 35H & \texttt{KEYNOW}, \texttt{KEYLAST}，保存当前键号和上一轮键号，用于按键边沿检测 \\
         \hline
-        39H, 3BH & \texttt{LEDREG}, \texttt{LASTBAR} 存放将要推入与前次推入 74HC164 的掩码态 \\
+        36H & \texttt{ROWIDX}，矩阵键盘扫描当前行号 \\
         \hline
-        42H, 43H & \texttt{LIDLO}, \texttt{LIDHI} 组成双字节作为 8 秒（8000ms）主业务关盖倒计时器 \\
+        37H, 38H & \texttt{TMP}, \texttt{CNT}，通用临时变量和主循环刷新计数器 \\
         \hline
-        44H, 45H & \texttt{BLKDIV}, \texttt{BLKFLG} 用于累加计算 100ms 阈值与倒转产生的 5Hz 发光控制 \\
+        39H, 3BH & \texttt{LEDREG}, \texttt{LASTBAR}，当前流水灯输出掩码和上一次输出掩码 \\
         \hline
-        46H, 47H & \texttt{HINTLO}, \texttt{HINTHI} 组成双字节作为 1 秒 “F”（FULL）报错的阻塞倒数 \\
+        42H, 43H & \texttt{LIDLO}, \texttt{LIDHI}，16 位开盖倒计时，单位为 ms，初值为 8000ms \\
         \hline
-        4DH, 4EH & \texttt{LIDOPEN}, \texttt{SELBIN} 保存当前盖子开启标志极性态与正在受理的舱位 \\
+        44H, 45H & \texttt{BLKDIV}, \texttt{BLKFLG}，100ms 分频计数与 5Hz 闪烁相位标志 \\
         \hline
-        4FH & \texttt{FULLBIN} 保存当前容量为空无法继续时被点名弹出满载报错显示的舱号 \\
+        46H, 47H & \texttt{HINTLO}, \texttt{HINTHI}，16 位蜂鸣器和 F/E 提示倒计时，单位为 ms，初值为 1000ms \\
+        \hline
+        4DH & \texttt{LIDOPEN}，桶盖开启状态标志，0 表示关闭，1 表示打开 \\
+        \hline
+        4EH & \texttt{SELBIN}，当前被选中的垃圾桶编号，\texttt{0xFF} 表示无选中桶 \\
+        \hline
+        4FH & \texttt{FULLBIN}，当前显示 F（FULL）的桶号，\texttt{0xFF} 表示无覆盖显示 \\
+        \hline
+        50H & \texttt{ERRBIN}，当前显示 E（ERROR）的桶号，\texttt{0xFF} 表示无覆盖显示 \\
+        \hline
+        51H--53H & \texttt{CALCMODE}, \texttt{CALCSTATE}, \texttt{CALCOP}，计算器模式、输入阶段和运算符状态 \\
+        \hline
+        54H--57H & \texttt{OP1}, \texttt{OP2}, \texttt{DIGCNT}, \texttt{CALCNEG}，计算器两个操作数、当前输入位数和负号标志 \\
+        \hline
+        58H, 59H & \texttt{RESLO}, \texttt{RESHI}，计算器 16 位结果缓存 \\
+        \hline
+        5AH--5DH & \texttt{CALCD0$\sim$CALCD3}，计算器模式下的四位数码管显示缓存，支持数字、空白、负号和 E \\
         \hline
     \end{tabular}
 \end{table}

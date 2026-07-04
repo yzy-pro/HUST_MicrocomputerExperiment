@@ -1,11 +1,11 @@
 # Fdb version 4
-["xdvipdfmx"] 1783142366.55455 "Efinal.xdv" "Efinal.pdf" "Efinal" 1783142367.62086 0
-  "Efinal.xdv" 1783142366.50527 107264 f5a8bf67a70fc6a75298e656bbeadc92 "xelatex"
+["xdvipdfmx"] 1783142538.49459 "Efinal.xdv" "Efinal.pdf" "Efinal" 1783142539.57175 0
+  "Efinal.xdv" 1783142538.44287 120176 a1f9077505664eaf2c37cd671c24b485 "xelatex"
   (generated)
   "Efinal.pdf"
   (rewritten before read)
-["xelatex"] 1783142365.77721 "/home/yzy/code/MicrocomputerExperiment/Efinal/Efinal.tex" "Efinal.xdv" "Efinal" 1783142367.61895 0
-  "/home/yzy/code/MicrocomputerExperiment/Efinal/Efinal.tex" 1783142298.7248 20684 0f0674718b1c4bffb38417867e1c383b ""
+["xelatex"] 1783142537.53718 "/home/yzy/code/MicrocomputerExperiment/Efinal/Efinal.tex" "Efinal.xdv" "Efinal" 1783142539.57025 0
+  "/home/yzy/code/MicrocomputerExperiment/Efinal/Efinal.tex" 1783142508.97986 22834 c3fc5c6d7d72a604635cb0933da2bbc7 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmmi10.tfm" 1136768653 1528 abec98dbc43e172678c11b3b9031252a ""
   "/usr/local/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmmi12.tfm" 1136768653 1524 4414a8315f39513458b80dfc63bff03a ""
@@ -139,8 +139,8 @@
   "/usr/local/texlive/2025/texmf-dist/web2c/texmf.cnf" 1739380943 42148 61becc7c670cd061bb319c643c27fdd4 ""
   "/usr/local/texlive/2025/texmf-var/web2c/xetex/xelatex.fmt" 1745761497 5854851 9405beb4c6cd273e0bd26aa5e146f3e8 ""
   "/usr/local/texlive/2025/texmf.cnf" 1745761447.97632 455 5b996dcaa0eb4ef14a83b026bc0a008c ""
-  "Efinal.aux" 1783142366.50382 2352 c4ad3824d65e1837ee2b80e96f9a1f18 "xelatex"
-  "Efinal.tex" 1783142298.7248 20684 0f0674718b1c4bffb38417867e1c383b ""
+  "Efinal.aux" 1783142538.44187 2354 e20b60367ceff6ebac894847b3fffec8 "xelatex"
+  "Efinal.tex" 1783142508.97986 22834 c3fc5c6d7d72a604635cb0933da2bbc7 ""
   "figures/requirements/image1.png" 1783141972.38456 1940635 008633e361a15c87e95a49d2c4863c5c ""
   "figures/requirements/image2.png" 1783141984.17467 1738987 f17f679347bf29185fb176b8159358ab ""
   (generated)
