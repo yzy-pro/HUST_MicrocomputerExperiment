@@ -11,12 +11,33 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.2}寄存器资源分配}{7}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.3}片内RAM资源分配}{8}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {4}流程图}{9}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}主程序状态轮询架构流程图}{9}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}定时器/外部中断并行处理流程图}{10}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}动态掩码刷新流图}{11}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {5}源代码 （含文件头说明、语句行注释）}{12}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {6}程序测试方法与结果}{12}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}测试方法}{12}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}测试结果}{12}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {7}实验问题分析与对策}{13}{}\protected@file@percent }
-\gdef \@abspage@last{14}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}主程序状态轮询架构流程图}{10}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces 主程序状态轮询与垃圾分类业务判别流程图}}{10}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}定时器/外部中断并行处理流程图}{11}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Timer0 系统节拍与 INT0 外部中断并行处理流程图}}{11}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}动态显示与流水灯刷新流程图}{12}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces 数码管覆盖显示与 D1--D8 流水灯进度条刷新流程图}}{12}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}源代码 （含文件头说明、语句行注释）}{13}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}源码文件组织}{13}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}公共头文件}{13}{}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {1}特殊功能寄存器定义：inc/sfr.inc}{13}{}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {2}片内 RAM 共享变量定义：inc/iram.inc}{15}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}启动与中断向量}{16}{}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3}中断向量表：src/vectors.asm}{16}{}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {4}硬件初始化与程序入口：src/init.asm}{17}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}中断服务程序}{20}{}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {5}外部中断与 Timer0 中断：src/isr.asm}{20}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}外设驱动模块}{22}{}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {6}四位数码管动态显示驱动：src/display.asm}{22}{}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {7}矩阵键盘扫描驱动：src/keypad.asm}{28}{}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {8}D1--D8 流水灯驱动：src/led\_bar.asm}{30}{}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {9}ROM 查找表：src/tables.asm}{34}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.6}业务状态机与扩展功能}{36}{}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {10}垃圾分类主状态机：src/main.asm}{36}{}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {11}计算器扩展状态机：src/calculator.asm}{41}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}程序测试方法与结果}{50}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}编译测试}{50}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}功能测试项目}{51}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}测试结果}{52}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}实验问题分析与对策}{52}{}\protected@file@percent }
+\gdef \@abspage@last{54}

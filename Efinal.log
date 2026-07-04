@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.4.27)  4 JUL 2026 13:22
+This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.4.27)  4 JUL 2026 13:47
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -684,32 +684,135 @@ Underfull \hbox (badness 10000) in paragraph at lines 170--170
 [7]
 
 [8]
+File: figures/flowchart/main_state.png Graphic file (type bmp)
+<figures/flowchart/main_state.png>
+
 
 [9]
 
 [10]
+File: figures/flowchart/interrupt_timing.png Graphic file (type bmp)
+<figures/flowchart/interrupt_timing.png>
+
 
 [11]
+File: figures/flowchart/display_led.png Graphic file (type bmp)
+<figures/flowchart/display_led.png>
 
-[12
+
+[12] (/usr/local/texlive/2025/texmf-dist/tex/latex/listings/lstlang1.sty
+File: lstlang1.sty 2024/09/23 1.10c listings language file
+) (/usr/local/texlive/2025/texmf-dist/tex/latex/listings/lstlang2.sty
+File: lstlang2.sty 2024/09/23 1.10c listings language file
+) (/usr/local/texlive/2025/texmf-dist/tex/latex/listings/lstlang3.sty
+File: lstlang3.sty 2024/09/23 1.10c listings language file
+) (./codes/Core/inc/sfr.inc
+LaTeX Font Info:    Font shape `TU/lmtt/bx/n' in size <8> not available
+(Font)              Font shape `TU/lmtt/b/n' tried instead on input line 7.
+
+
+[13
 
 ]
 
-[13]
+[14]) (./codes/Core/inc/iram.inc
 
-[14] (./Efinal.aux)
+[15]) (./codes/Core/src/vectors.asm
+
+[16]) (./codes/Core/src/init.asm
+
+[17]
+
+[18]
+
+[19]) (./codes/Core/src/isr.asm
+
+[20]
+
+[21]) (./codes/Core/src/display.asm
+
+[22]
+
+[23]
+
+[24]
+
+[25]
+
+[26])
+
+[27] (./codes/Core/src/keypad.asm
+
+[28]
+
+[29]) (./codes/Core/src/led_bar.asm
+
+[30]
+
+[31]
+
+[32]
+
+[33]) (./codes/Core/src/tables.asm
+
+[34]
+
+[35]) (./codes/Core/src/main.asm
+
+[36]
+
+[37]
+
+[38]
+
+[39]
+
+[40]) (./codes/Core/src/calculator.asm
+
+[41]
+
+[42]
+
+[43]
+
+[44]
+
+[45]
+
+[46]
+
+[47]
+
+[48]
+
+[49])
+
+[50]
+Underfull \hbox (badness 1478) in paragraph at lines 341--341
+[]\TU/FandolSong-Regular(0)/m/n/10.95 数 字 键 多 袋 投
+ []
+
+
+
+[51]
+
+[52]
+
+[53]
+
+[54] (./Efinal.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2022/08/05>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 20854 strings out of 470267
- 517979 string characters out of 5484665
- 877355 words of memory out of 5000000
- 47149 multiletter control sequences out of 15000+600000
- 632869 words of font info for 80 fonts, out of 8000000 for 9000
+ 21957 strings out of 470267
+ 537642 string characters out of 5484665
+ 1412117 words of memory out of 5000000
+ 48198 multiletter control sequences out of 15000+600000
+ 632893 words of font info for 83 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 93i,11n,112p,502b,378s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 93i,11n,112p,502b,2176s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on Efinal.xdv (14 pages, 120176 bytes).
+Output written on Efinal.xdv (54 pages, 746164 bytes).

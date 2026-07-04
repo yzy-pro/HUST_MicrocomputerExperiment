@@ -1,0 +1,41 @@
+%%{init: {"theme": "base", "themeVariables": {"fontFamily": "Noto Sans CJK SC, Microsoft YaHei, SimHei, sans-serif", "primaryColor": "#FFF7ED", "primaryBorderColor": "#EA580C", "primaryTextColor": "#111827", "lineColor": "#374151", "secondaryColor": "#F8FAFC", "tertiaryColor": "#F0FDF4"}}}%%
+flowchart TD
+    A([主循环进入显示刷新阶段]) --> B{CALCMODE 是否为 1}
+
+    B -- 是 --> C[读取 CALCD3 至 CALCD0<br/>按计算器显示缓存取段码]
+    C --> D[依次选择 BA=00 01 10 11<br/>每位显示约 1ms]
+    D --> E[段选关闭并短暂消隐<br/>减少数码管重影]
+    E --> F([返回主循环])
+
+    B -- 否 --> G[普通垃圾分类显示<br/>依次读取 CAP0 至 CAP3]
+    G --> H[对当前位调用 GET_SEG]
+    H --> I{ERRBIN 是否等于当前位}
+    I -- 是 --> J[输出 E 段码<br/>批量投放超容量提示]
+    I -- 否 --> K{FULLBIN 是否等于当前位}
+    K -- 是 --> L[输出 F 段码<br/>满桶拒投提示]
+    K -- 否 --> M{LIDOPEN=1 且 SELBIN 等于当前位}
+    M -- 否 --> N[查 SEG_TAB<br/>输出容量数字段码]
+    M -- 是 --> O{BLKFLG 是否为 0}
+    O -- 是 --> P[输出空白段码<br/>形成闪烁熄灭相位]
+    O -- 否 --> N
+    J --> Q[选择对应数码管位<br/>写入 P1 段码]
+    L --> Q
+    N --> Q
+    P --> Q
+    Q --> R[保持约 1ms 后关闭段选]
+    R --> S{四位是否刷新完}
+    S -- 否 --> H
+    S -- 是 --> F
+
+    T([主循环调用 UPDATE_LED_BAR]) --> U{LIDOPEN 是否为 1}
+    U -- 否 --> V[目标掩码 FFH<br/>D1 至 D8 全灭]
+    U -- 是 --> W[读取 LIDHI:LIDLO<br/>按 7000 6000 ... 1000ms 阈值<br/>换算 0 至 8 格亮灯等级]
+    W --> X[查 LED_BAR_TAB<br/>得到 D1 至 D8 掩码]
+    V --> Y{掩码是否与 LASTBAR 相同}
+    X --> Y
+    Y -- 相同 --> Z[跳过移位输出<br/>减少重复刷新]
+    Y -- 不同 --> AA[更新 LEDREG 与 LASTBAR]
+    AA --> AB[关闭中断<br/>从最高位开始送入 74HCT164<br/>P3.3 输出数据 P3.4 给时钟]
+    AB --> AC[重新打开中断]
+    Z --> AD([返回主循环])
+    AC --> AD

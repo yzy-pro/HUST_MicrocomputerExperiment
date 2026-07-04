@@ -217,107 +217,150 @@
 
 \newpage
 \section{流程图}
+\noindent 系统运行流程可分为三个相互配合的部分：主程序负责垃圾分类业务状态判断和按键分发，Timer0 与 INT0 负责倒计时、闪烁、报警和提前关盖等实时任务，显示驱动负责四位数码管覆盖显示及 D1--D8 流水灯进度刷新。以下流程图分别给出这三部分的具体执行过程。
+
 \subsection{主程序状态轮询架构流程图}
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=0.95\textwidth,height=0.8\textheight,keepaspectratio]{figures/main_flow.png}
-%     \caption{主程序状态轮询与判别流图}
-% \end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth,height=0.82\textheight,keepaspectratio]{figures/flowchart/main_state.png}
+    \caption{主程序状态轮询与垃圾分类业务判别流程图}
+\end{figure}
 
 \newpage
 \subsection{定时器/外部中断并行处理流程图}
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=0.95\textwidth,height=0.85\textheight,keepaspectratio]{figures/t0_isr_flow.png}
-%     \caption{定时器 0 多任务时延中断处理}
-% \end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth,height=0.82\textheight,keepaspectratio]{figures/flowchart/interrupt_timing.png}
+    \caption{Timer0 系统节拍与 INT0 外部中断并行处理流程图}
+\end{figure}
 
 \newpage
-\subsection{动态掩码刷新流图}
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=0.95\textwidth,height=0.85\textheight,keepaspectratio]{figures/refresh_flow.png}
-%     \caption{附带全屏锁定覆盖、闪烁覆盖的新型动态扫描流图}
-% \end{figure}
+\subsection{动态显示与流水灯刷新流程图}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth,height=0.82\textheight,keepaspectratio]{figures/flowchart/display_led.png}
+    \caption{数码管覆盖显示与 D1--D8 流水灯进度条刷新流程图}
+\end{figure}
 \clearpage
 
 \section{源代码 （含文件头说明、语句行注释）}
-% \lstinputlisting[language={[x86masm]Assembler}]{codes/STARTUP.asm}
+本系统源码采用多文件汇编结构组织。公共头文件定义特殊功能寄存器和片内 RAM 变量，启动文件完成硬件初始化，中断、显示、键盘、流水灯、查表、主状态机和计算器扩展分别放在独立模块中。各源文件开头均说明了模块用途、硬件连接或导出函数，关键语句处也保留了必要注释，便于结合前文设计思路阅读。
+
+\subsection{源码文件组织}
+\begin{table}[H]
+    \centering
+    \small
+    \begin{tabular}{|p{4.2cm}|p{10.8cm}|}
+        \hline
+        文件 & 主要功能 \\
+        \hline
+        \texttt{inc/sfr.inc} & C8051F310 标准及扩展特殊功能寄存器、位地址和硬件别名定义。 \\
+        \hline
+        \texttt{inc/iram.inc} & 片内 RAM 共享变量地址定义，包括容量、键盘、倒计时、提示和计算器缓存。 \\
+        \hline
+        \texttt{src/vectors.asm} & 复位向量、INT0 外部中断向量和 Timer0 中断向量。 \\
+        \hline
+        \texttt{src/init.asm} & 单片机初始化、端口模式配置、Timer0/INT0 配置、随机容量生成和程序入口。 \\
+        \hline
+        \texttt{src/isr.asm} & Kint 提前关盖外部中断服务程序与 1ms Timer0 系统节拍中断服务程序。 \\
+        \hline
+        \texttt{src/display.asm} & 四位数码管动态扫描、F/E 覆盖显示、5Hz 闪烁显示和计算器显示缓存转换。 \\
+        \hline
+        \texttt{src/keypad.asm} & 4$\times$4 矩阵键盘扫描、消抖和物理键位到逻辑键号的映射。 \\
+        \hline
+        \texttt{src/led\_bar.asm} & D1--D8 流水灯进度条计算和 74HCT164 串行移位输出。 \\
+        \hline
+        \texttt{src/tables.asm} & 数码管段码表、流水灯等级掩码表和键盘重映射表。 \\
+        \hline
+        \texttt{src/main.asm} & 主循环、垃圾桶开盖状态机、容量扣减、满桶/错误提示和物业清空。 \\
+        \hline
+        \texttt{src/calculator.asm} & F5 进入的计算器扩展模式，包括输入、退格、四则运算和结果显示。 \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\lstset{
+    language={[x86masm]Assembler},
+    basicstyle=\scriptsize\ttfamily,
+    numbers=left,
+    numberstyle=\tiny,
+    stepnumber=1,
+    numbersep=6pt,
+    frame=single,
+    breaklines=true,
+    columns=flexible,
+    keepspaces=true,
+    showstringspaces=false,
+    commentstyle=\upshape,
+    tabsize=4
+}
+
+\subsection{公共头文件}
+\lstinputlisting[caption={特殊功能寄存器定义：inc/sfr.inc}]{codes/Core/inc/sfr.inc}
+\lstinputlisting[caption={片内 RAM 共享变量定义：inc/iram.inc}]{codes/Core/inc/iram.inc}
+
+\subsection{启动与中断向量}
+\lstinputlisting[caption={中断向量表：src/vectors.asm}]{codes/Core/src/vectors.asm}
+\lstinputlisting[caption={硬件初始化与程序入口：src/init.asm}]{codes/Core/src/init.asm}
+
+\subsection{中断服务程序}
+\lstinputlisting[caption={外部中断与 Timer0 中断：src/isr.asm}]{codes/Core/src/isr.asm}
+
+\subsection{外设驱动模块}
+\lstinputlisting[caption={四位数码管动态显示驱动：src/display.asm}]{codes/Core/src/display.asm}
+\lstinputlisting[caption={矩阵键盘扫描驱动：src/keypad.asm}]{codes/Core/src/keypad.asm}
+\lstinputlisting[caption={D1--D8 流水灯驱动：src/led\_bar.asm}]{codes/Core/src/led_bar.asm}
+\lstinputlisting[caption={ROM 查找表：src/tables.asm}]{codes/Core/src/tables.asm}
+
+\subsection{业务状态机与扩展功能}
+\lstinputlisting[caption={垃圾分类主状态机：src/main.asm}]{codes/Core/src/main.asm}
+\lstinputlisting[caption={计算器扩展状态机：src/calculator.asm}]{codes/Core/src/calculator.asm}
 
 \section{程序测试方法与结果}
-本节在 Proteus 仿真环境下对智能垃圾分类投放系统的各项功能进行测试，重点验证随机容量生成、开盖逻辑、容量递减、满载提示、倒计时流水灯进度条及外部中断提前关盖等功能的正确性。
+本节对程序的构建结果和板级功能进行测试。测试平台为 C8051F310EVM，观察对象包括四位数码管、D1--D8 流水灯、D9 桶盖状态灯和蜂鸣器，测试内容覆盖基础要求、提高要求和个性化扩展功能。
 
-\subsection{测试方法}
-\begin{enumerate}
-    \item \textbf{初始化容量生成测试}：系统上电或复位后，观察四位数码管是否随机生成 $0\sim9$ 的数字，流水灯 D1$\sim$D8 及指示灯 D9 处于熄灭状态。
-    \item \textbf{正常投放开盖及频闪测试}：当对应类别存在剩余容量时，按下键盘对应组键，检查 D9 开启、且该对应数码管是否以 5Hz 频率闪烁、流水灯 D1$\sim$D8 是否全亮。
-    \item \textbf{投放容量递减测试}：在开盖倒计时 8 秒期间，再次按下同一按键，观察闪烁中的数码管对应的容量数字是否递减 1。
-    \item \textbf{硬件倒计时及打断测试}：观察流水灯是否随着 8 秒时间流逝逐格熄灭。开盖期间点击外部中断按键，观察盖子和流水灯是否即刻关闭。
-    \item \textbf{满载报错全显闪现测试}：针对容量为 0 的垃圾分类，在待机时按下按键，观察数码管对应位是否短暂显示字母 F 并持续 1 秒后恢复。
-\end{enumerate}
+\subsection{编译测试}
+本工程采用 \texttt{sdas8051} 汇编器和 \texttt{sdld} 链接器构建，执行工程构建脚本后，9 个汇编源文件均成功生成目标文件，并链接得到 \texttt{c8051f310.hex}。当前构建输出无 Error，未出现 Warning 提示，生成的 Intel HEX 文件大小约为 5.0KB。
+
+根据链接生成的 \texttt{c8051f310.map} 文件统计，程序各代码段和查表数据段实际占用约 2111 字节，最高使用代码地址约为 \texttt{0x0B7A}，低于 C8051F310 本实验可用的 8KB 程序空间限制，容量满足下载和运行要求。
+
+\subsection{功能测试项目}
+\begin{table}[H]
+    \centering
+    \small
+    \begin{tabular}{|p{2.5cm}|p{4.3cm}|p{6.5cm}|}
+        \hline
+        测试项目 & 操作方法 & 预期现象 \\
+        \hline
+        上电初始化 & 烧录程序后复位实验板 & 四位数码管显示 4 个 $0\sim9$ 的容量值，蜂鸣器关闭，D9 熄灭，D1--D8 流水灯熄灭。 \\
+        \hline
+        F1--F4 开盖 & 按下 K10--K13（F1--F4）中的任一分类键 & 若对应容量大于 0，则 D9 点亮，桶盖进入 8s 开启状态，选中数码管以约 5Hz 闪烁，流水灯开始显示倒计时进度。 \\
+        \hline
+        单袋投递 & 开盖后再次按下同一分类键 & 当前垃圾桶容量减少 1，其它垃圾桶容量保持不变。 \\
+        \hline
+        数字键多袋投递 & 开盖后按 K1--K9 & 当前垃圾桶容量按数字键值一次性减少对应袋数。 \\
+        \hline
+        超量投递 & 开盖后按下大于剩余容量的数字键 & 容量不变，对应数码管显示 E，蜂鸣器鸣响约 1s，并立即关闭桶盖。 \\
+        \hline
+        满桶拒绝 & 将某桶容量投至 0 后，再按对应 F 键 & 系统不开盖，对应数码管显示 F，蜂鸣器鸣响约 1s 后恢复显示 0。 \\
+        \hline
+        自动关盖 & 开盖后不再操作 & 约 8s 后自动关盖，D9 熄灭，D1--D8 进度条结束，数码管停止闪烁。 \\
+        \hline
+        提前关盖 & 开盖期间按 Kint & 外部中断立即清除开盖倒计时，D9 熄灭，流水灯全灭，系统返回待机状态。 \\
+        \hline
+        物业清空 & 按 K15（F6） & 四个垃圾桶容量恢复为 9，当前开盖状态被清除，蜂鸣器短响确认。 \\
+        \hline
+        计算器模式 & 按 K14（F5）进入，使用 K0--K9 和 K10--K15 操作 & 数码管切换为计算器显示，支持数字输入、四则运算、退格和等号；按 Kint 后退出并恢复垃圾分类显示。 \\
+        \hline
+    \end{tabular}
+\end{table}
 
 \subsection{测试结果}
-\textbf{（1）上电随机容量显示测试}
+按照表中项目逐项测试后，系统表现与预期一致。上电或复位后，四个垃圾桶容量能够正常初始化并显示；按下 F1--F4 分类键后，容量非零的垃圾桶能够正常开盖，D9、流水灯和选中数码管闪烁状态均能正确联动。开盖期间，同类键单袋投递和 K1--K9 数字键多袋投递均能正确扣减容量。
 
-\noindent 操作：系统上电运行。\\
-预期：四位数码管显示 4 位独立生成的随机数（例如“2 5 8 1”），指示灯全灭。\\
-结果：符合预期。
+异常场景测试中，满桶状态下系统能够拒绝开盖并显示 F；批量投放超过剩余容量时，系统能够显示 E、蜂鸣提示并立即关闭桶盖，且容量保持不变。定时测试中，8s 自动关盖准确发生；外部中断测试中，Kint 能够立即提前关盖，说明 Timer0 中断和 INT0 中断能够与主循环状态机正确配合。
 
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=0.78\textwidth]{figures/figure1.png}
-%     \caption{随机生成初始垃圾桶容量测试}
-% \end{figure}
-
-\textbf{（2）投放开盖与频闪进度条激活测试}
-
-\noindent  操作：按下一个有余量的分类对应按键。\\
-预期：D9 灯亮模拟开盖，选中的数码管数字开始闪烁，D1$\sim$D8 流水灯全亮。\\
-结果：符合预期。
-
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=0.78\textwidth]{figures/figure2.png}
-%     \caption{开盖发光与闪烁提示测试}
-% \end{figure}
-
-\textbf{（3）舱室容量动态扣减测试}
-
-\noindent  操作：在上述开盖期间，再次按下该分类对应的按键。\\
-预期：正在闪烁的数码管容量减 1，其它状态及计数不变。\\
-结果：符合预期。
-
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=0.78\textwidth]{figures/figure3.png}
-%     \caption{容量递减动态测试}
-% \end{figure}
-
-\textbf{（4）进度条流失与提前中止中断测试}
-
-\noindent  操作：不操作按键等待进度条自然熄灭；随后再次开盖，途中按下外部中断按钮。\\
-预期：进度条随秒数等比递减，直到熄灭（自动关盖）；有外部中断触发时，倒数全盘清空并立刻关盖息屏。\\
-结果：符合预期。
-
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=0.78\textwidth]{figures/figure4.png}
-%     \caption{进度条变化与抢占关盖测试}
-% \end{figure}
-
-\textbf{（5）满载报错提示拦截测试}
-
-\noindent  操作：将某分类垃圾桶容量扣减为 0，桶盖关闭待机。此时在此分类下尝试二次投递按键。\\
-预期：系统拒绝开盖，流水灯不亮，在对应的数码管暂留 “F” （FULL）警告，约 1 秒后自动消失并恢复原本数字 0 的空闲显示。\\
-结果：符合预期。
-
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=0.78\textwidth]{figures/figure5.png}
-%     \caption{满载无余量（F）警告拦截测试}
-% \end{figure}
-
-综上所述，程序完整且流畅地实现了在多按键输入场景下的各类垃圾存放分配功能。单片机依靠其内外部中断系统与状态机轮询完美承接了题目所要求的进度条和闪烁控制等所有加分冲优任务，逻辑判定响应均无短频或明显时延。
+扩展功能测试中，K15（F6）物业清空能够将四个容量统一恢复为 9；K14（F5）计算器模式能够正常进入和退出，并完成基本四则运算。综合测试表明，当前程序已实现实验任务要求的基础功能和提高功能，运行过程中未发现明显显示冲突、误触发或状态无法恢复的问题。
 
 
 
@@ -325,22 +368,40 @@
 \section{实验问题分析与对策}
 
 \begin{enumerate}
-        \item \textbf{Proteus仿真软件存在bug}：
+    \item \textbf{矩阵键盘物理扫描顺序与实验按键编号不一致}：
     \begin{itemize}
-        \item \textbf{原因分析}：Proteus仿真软件存在bug，无论如何修改代码，Proteus对于按键的输入引脚电平计算有误，相同的代码和工程文件在另一台电脑上即可正常运行。
-        \item \textbf{对策}：借助同学的电脑进行，完成实验。
+        \item \textbf{原因分析}：4$\times$4 矩阵键盘按行列扫描时，程序首先得到的是“行号乘以 4 再加列号”的自然扫描码。该顺序与实验资料中标注的 K0--K15 逻辑编号并不完全一致，如果直接使用扫描码，会导致 K10--K13、K14、K15 等功能键与实际按键含义错位，从而影响垃圾桶分类选择、计算器入口和物业清空功能。
+        \item \textbf{解决方法}：在键盘扫描模块中增加 \texttt{KEY\_REMAP\_TAB} 查表映射。程序完成行列扫描和消抖后，先计算自然扫描码，再通过该表转换为实验 PDF 中的逻辑键号，使 K10--K13 正确对应 F1--F4，K14 对应 F5，K15 对应 F6。主循环只处理重映射后的键号，从而避免业务逻辑与物理键盘布局耦合。
     \end{itemize}
 
-    \item \textbf{数码管显示字形与预期不符}：
+    \item \textbf{机械按键抖动与长按重复触发}：
     \begin{itemize}
-        \item \textbf{原因分析}：段码与电路接线顺序不匹配，数字显示不正常。
-        \item \textbf{对策}：对照原理图逐一确认 P1.0$\sim$P1.7 分别对应 DP、G、F、E、D、C、B、A 引脚，重新计算共阴极段码：S=0B6H、O=0FCH、E=09EH、I=060H，验证后问题解决。
+        \item \textbf{原因分析}：矩阵键盘为机械按键，按下和释放瞬间会出现电平抖动；同时主循环会周期性扫描键盘，如果不区分“刚按下”和“持续按住”，长按某个分类键或数字键可能被识别为多次输入，造成容量连续扣减或功能重复触发。
+        \item \textbf{解决方法}：在 \texttt{SCAN\_KEY} 中加入约 30ms 的消抖等待，并在主循环中使用 \texttt{KEYNOW} 与 \texttt{KEYLAST} 做边沿检测。只有当前键号与上一轮不同，且不是无键状态时，才认为产生一次新按键事件；当扫描结果为无键时，再将 \texttt{KEYLAST} 恢复为 \texttt{0xFF}。这样既能过滤抖动，也能避免长按期间反复触发。
     \end{itemize}
 
-    \item \textbf{按键扫描的逻辑不正确}：
+    \item \textbf{中断与主循环共享 16 位状态变量}：
     \begin{itemize}
-        \item \textbf{原因分析}：理论上按键在扫描时应该将P2.0$\sim$P2.3依次置低，读取P2.4$\sim$P2.7的状态来判断按键，但实际代码中将电平逻辑反了，而硬件连接不支持另一种电平逻辑，导致按键状态无法正确识别。
-        \item \textbf{对策}：修改按键扫描代码，将P2.0$\sim$P2.3置低时读取P2.4$\sim$P2.7的状态进行判断，确保按键输入能够正确映射到显示缓存的更新。
+        \item \textbf{原因分析}：Timer0 中断每 1ms 修改开盖倒计时 \texttt{LIDHI:LIDLO}、提示倒计时 \texttt{HINTHI:HINTLO} 和闪烁标志；主循环在开盖、满桶报警、超量投放和物业清空时也会写这些变量。由于 8051 写 16 位变量需要分两次写高低字节，若写入过程中被 Timer0 中断打断，可能造成倒计时高低字节短暂不一致。
+        \item \textbf{解决方法}：在主循环需要重新装载或清零 16 位倒计时变量时，先短暂关闭总中断 \texttt{EA}，完成低字节和高字节写入后再打开 \texttt{EA}。中断服务程序内部只按固定顺序递减变量，主循环与中断之间通过这种短临界区方式避免读写冲突。
+    \end{itemize}
+
+    \item \textbf{容量不足时的状态恢复问题}：
+    \begin{itemize}
+        \item \textbf{原因分析}：数字键批量投放时，如果输入袋数超过当前垃圾桶剩余容量，仅显示 E 而继续保持开盖状态，会让用户误以为仍可继续投放，与“拒绝本次投放”的业务含义不一致，也容易造成后续按键状态混乱。
+        \item \textbf{解决方法}：在 \texttt{HANDLE\_BAGS} 中检测到容量不足后，程序设置 \texttt{ERRBIN} 显示 E，启动 1s 蜂鸣提示，并立即清除 \texttt{LIDOPEN}、\texttt{SELBIN} 和 \texttt{LIDHI:LIDLO}，同时熄灭 D9。这样系统在错误提示结束后自然回到关盖待机状态，容量值保持不变。
+    \end{itemize}
+
+    \item \textbf{动态数码管刷新时出现重影风险}：
+    \begin{itemize}
+        \item \textbf{原因分析}：四位数码管采用分时动态扫描，如果在切换位选时 P1 段码仍保持上一位的输出，可能在极短时间内把上一位段码显示到下一位，表现为轻微重影。开盖闪烁、F/E 覆盖显示和计算器显示复用同一套数码管驱动时，这一问题更明显。
+        \item \textbf{解决方法}：在 \texttt{REFRESH\_ALL} 中切换每一位前先将 \texttt{P1} 清零关闭段选，并调用短消隐延时 \texttt{DISPLAY\_BLANK\_GAP}，待位选地址稳定后再输出新的段码。显示覆盖优先级统一放在 \texttt{GET\_SEG} 中处理，保证 E、F、闪烁空白和正常数字不会互相覆盖。
+    \end{itemize}
+
+    \item \textbf{流水灯串行移位输出可能被中断打断}：
+    \begin{itemize}
+        \item \textbf{原因分析}：D1--D8 流水灯由 74HCT164 串行移位寄存器驱动，程序需要连续输出 8 位数据和时钟脉冲。如果移位过程中发生 Timer0 中断，P3.3/P3.4 的数据和时钟时序可能被拉长，造成流水灯状态短暂异常。
+        \item \textbf{解决方法}：在 \texttt{SHIFT\_LED\_BAR} 中移位输出前关闭总中断 \texttt{EA}，连续完成 8 位数据发送后再打开中断。由于该过程很短，不会明显影响 1ms 系统节拍，却能保证 74HCT164 获得完整稳定的移位时序。
     \end{itemize}
 
 \end{enumerate}

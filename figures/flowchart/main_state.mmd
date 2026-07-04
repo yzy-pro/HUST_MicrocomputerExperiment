@@ -1,0 +1,45 @@
+%%{init: {"theme": "base", "themeVariables": {"fontFamily": "Noto Sans CJK SC, Microsoft YaHei, SimHei, sans-serif", "primaryColor": "#E8F3FF", "primaryBorderColor": "#2563EB", "primaryTextColor": "#111827", "lineColor": "#374151", "secondaryColor": "#ECFDF5", "tertiaryColor": "#FFF7ED", "fontSize": "22px"}}}%%
+flowchart TD
+    A([系统复位 START]) --> B[硬件初始化<br/>关闭看门狗 配置振荡器<br/>配置 P0-P3 Timer0 INT0]
+    B --> C[RAM 状态初始化<br/>容量 键盘 倒计时 报警 计算器缓存]
+    C --> D[伪随机生成 CAP0-CAP3<br/>四类垃圾桶初始容量 0 至 9]
+    D --> E[流水灯全灭<br/>进入 MAIN_LOOP]
+
+    E --> F[主循环周期任务<br/>UPDATE_LED_BAR<br/>REFRESH_ALL 约 40 次<br/>SCAN_KEY 扫描并消抖]
+    F --> G{是否检测到新按键}
+    G -- 否 --> E
+    G -- 是 --> H{当前是否为<br/>计算器模式}
+
+    H -- 是 --> I[CALC_HANDLE_KEY<br/>数字输入 运算符 Back 等号]
+    I --> Z([返回 MAIN_LOOP])
+
+    H -- 否 --> J{普通模式按键分发}
+
+    J -- K14 F5 --> K[ENTER_CALC<br/>关闭垃圾分类临时状态<br/>切换到计算器显示缓存]
+    K --> Z
+
+    J -- K15 F6 --> L[PROP_CLEAR<br/>四桶容量恢复为 9<br/>关盖 清流水灯 蜂鸣确认]
+    L --> Z
+
+    J -- K1 至 K9 --> M{桶盖是否打开}
+    M -- 否 --> Z
+    M -- 是 --> N[HANDLE_NUMBER<br/>数字键值作为一次投放袋数]
+    N --> O[HANDLE_BAGS<br/>统一判断容量是否足够]
+
+    J -- K10 至 K13<br/>F1 至 F4 --> P{桶盖是否打开}
+    P -- 是 --> Q{是否再次按下<br/>同一类别键}
+    Q -- 否 --> Z
+    Q -- 是 --> R[投放 1 袋<br/>调用 HANDLE_BAGS]
+    R --> O
+
+    P -- 否 --> S{所选垃圾桶<br/>容量是否为 0}
+    S -- 是 --> T[FULL_ALERT<br/>对应数码管显示 F<br/>蜂鸣约 1s 桶盖不开启]
+    T --> Z
+    S -- 否 --> U[打开桶盖<br/>记录 SELBIN<br/>装入 8000ms 倒计时<br/>D9 点亮 对应位 5Hz 闪烁]
+    U --> Z
+
+    O --> V{容量是否足够}
+    V -- 足够 --> W[扣减 CAP<br/>保持当前开盖状态]
+    W --> Z
+    V -- 不足 --> X[ERRBIN 显示 E<br/>蜂鸣约 1s<br/>立即关闭桶盖]
+    X --> Z

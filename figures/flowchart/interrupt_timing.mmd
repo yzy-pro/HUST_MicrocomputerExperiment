@@ -1,0 +1,40 @@
+%%{init: {"theme": "base", "themeVariables": {"fontFamily": "Noto Sans CJK SC, Microsoft YaHei, SimHei, sans-serif", "primaryColor": "#F0FDFA", "primaryBorderColor": "#0F766E", "primaryTextColor": "#111827", "lineColor": "#374151", "secondaryColor": "#EFF6FF", "tertiaryColor": "#FEF2F2"}}}%%
+flowchart TD
+    A([Timer0 溢出中断<br/>每约 1ms 进入]) --> B[保护 ACC 和 PSW]
+    B --> C[重装 TH0=F8H<br/>TL0=06H]
+
+    C --> D{LIDHI:LIDLO 是否为 0}
+    D -- 否 --> E[开盖倒计时减 1ms]
+    E --> F{递减后是否归零}
+    F -- 是 --> G[自动关盖<br/>LIDOPEN=0<br/>SELBIN=FFH<br/>D9 熄灭]
+    F -- 否 --> H[保持当前开盖状态]
+    D -- 是 --> H
+    G --> I
+    H --> I[BLKDIV 加 1]
+
+    I --> J{BLKDIV 是否达到 100}
+    J -- 是 --> K[BLKDIV 清零<br/>BLKFLG 翻转<br/>形成 5Hz 闪烁相位]
+    J -- 否 --> L[闪烁相位保持]
+    K --> M
+    L --> M{HINTHI:HINTLO 是否为 0}
+
+    M -- 否 --> N[提示倒计时减 1ms]
+    N --> O{递减后是否归零}
+    O -- 是 --> P[关闭蜂鸣器<br/>清除 FULLBIN 与 ERRBIN]
+    O -- 否 --> Q[保持蜂鸣和覆盖显示]
+    M -- 是 --> R[无提示任务]
+    P --> S[恢复 ACC 和 PSW]
+    Q --> S
+    R --> S
+    S --> T([RETI 返回主循环])
+
+    U([INT0 外部中断<br/>Kint 下降沿触发]) --> V[保护 ACC 和 PSW]
+    V --> W{CALCMODE 是否为 1}
+    W -- 是 --> X[退出计算器模式<br/>清除计算器输入状态]
+    W -- 否 --> Y{LIDOPEN 是否为 1}
+    Y -- 否 --> Z[无开盖任务<br/>忽略本次中断]
+    Y -- 是 --> AA[提前关盖<br/>LIDOPEN=0<br/>SELBIN=FFH<br/>LIDHI:LIDLO=0<br/>D9 熄灭]
+    X --> AB[恢复 ACC 和 PSW]
+    Z --> AB
+    AA --> AB
+    AB --> AC([RETI 返回])

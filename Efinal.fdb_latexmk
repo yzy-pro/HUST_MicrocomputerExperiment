@@ -1,11 +1,11 @@
 # Fdb version 4
-["xdvipdfmx"] 1783142538.49459 "Efinal.xdv" "Efinal.pdf" "Efinal" 1783142539.57175 0
-  "Efinal.xdv" 1783142538.44287 120176 a1f9077505664eaf2c37cd671c24b485 "xelatex"
+["xdvipdfmx"] 1783144057.5914 "Efinal.xdv" "Efinal.pdf" "Efinal" 1783144059.63205 0
+  "Efinal.xdv" 1783144057.53607 746164 5cd4b49c60e7f9ba4d09cb69272b7a96 "xelatex"
   (generated)
   "Efinal.pdf"
   (rewritten before read)
-["xelatex"] 1783142537.53718 "/home/yzy/code/MicrocomputerExperiment/Efinal/Efinal.tex" "Efinal.xdv" "Efinal" 1783142539.57025 0
-  "/home/yzy/code/MicrocomputerExperiment/Efinal/Efinal.tex" 1783142508.97986 22834 c3fc5c6d7d72a604635cb0933da2bbc7 ""
+["xelatex"] 1783144055.59635 "/home/yzy/code/MicrocomputerExperiment/Efinal/Efinal.tex" "Efinal.xdv" "Efinal" 1783144059.63042 0
+  "/home/yzy/code/MicrocomputerExperiment/Efinal/Efinal.tex" 1783144006.23853 30425 4be4c2aa1a1f0a46f105d31311590b39 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmmi10.tfm" 1136768653 1528 abec98dbc43e172678c11b3b9031252a ""
   "/usr/local/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmmi12.tfm" 1136768653 1524 4414a8315f39513458b80dfc63bff03a ""
@@ -116,6 +116,9 @@
   "/usr/local/texlive/2025/texmf-dist/tex/latex/l3packages/xtemplate/xtemplate.sty" 1724879202 1308 87acdbdf1ed70c3b07e2090f15bd3635 ""
   "/usr/local/texlive/2025/texmf-dist/tex/latex/listings/listings.cfg" 1727126400 1865 301ae3c26fb8c0243307b619a6aa2dd3 ""
   "/usr/local/texlive/2025/texmf-dist/tex/latex/listings/listings.sty" 1727126400 81640 997090b6c021dc4af9ee00a97b85c5b4 ""
+  "/usr/local/texlive/2025/texmf-dist/tex/latex/listings/lstlang1.sty" 1727126400 206518 4eb59a801ad842a713fa168c34227290 ""
+  "/usr/local/texlive/2025/texmf-dist/tex/latex/listings/lstlang2.sty" 1727126400 93855 83782cbe438f9229c1d17e92cee1446d ""
+  "/usr/local/texlive/2025/texmf-dist/tex/latex/listings/lstlang3.sty" 1727126400 90497 606307f9d31e805cfff0cd62ff91a50e ""
   "/usr/local/texlive/2025/texmf-dist/tex/latex/listings/lstmisc.sty" 1727126400 77051 be68720e5402397a830abb9eed5a2cb4 ""
   "/usr/local/texlive/2025/texmf-dist/tex/latex/listings/lstpatch.sty" 1710360531 353 9024412f43e92cd5b21fe9ded82d0610 ""
   "/usr/local/texlive/2025/texmf-dist/tex/latex/multirow/multirow.sty" 1731446765 6696 886c9f3087d0b973ed2c19aa79cb3023 ""
@@ -139,8 +142,22 @@
   "/usr/local/texlive/2025/texmf-dist/web2c/texmf.cnf" 1739380943 42148 61becc7c670cd061bb319c643c27fdd4 ""
   "/usr/local/texlive/2025/texmf-var/web2c/xetex/xelatex.fmt" 1745761497 5854851 9405beb4c6cd273e0bd26aa5e146f3e8 ""
   "/usr/local/texlive/2025/texmf.cnf" 1745761447.97632 455 5b996dcaa0eb4ef14a83b026bc0a008c ""
-  "Efinal.aux" 1783142538.44187 2354 e20b60367ceff6ebac894847b3fffec8 "xelatex"
-  "Efinal.tex" 1783142508.97986 22834 c3fc5c6d7d72a604635cb0933da2bbc7 ""
+  "Efinal.aux" 1783144057.53507 5128 7796ddc9b6e3fcf702f900855bb8ed6c "xelatex"
+  "Efinal.tex" 1783144006.23853 30425 4be4c2aa1a1f0a46f105d31311590b39 ""
+  "codes/Core/inc/iram.inc" 1782028201.68297 1633 5ac0b6ae86003a64377daae81101bd85 ""
+  "codes/Core/inc/sfr.inc" 1781779021.55443 1487 4c3ab92647b638cfd030d461c2025a69 ""
+  "codes/Core/src/calculator.asm" 1782028904.80966 8934 e2c365a142c96d9ff47e703e2f81cb3f ""
+  "codes/Core/src/display.asm" 1782032001.95189 6075 37e1369e0ad188a7e37cf52b76ca38f0 ""
+  "codes/Core/src/init.asm" 1782028228.41291 2958 5fe4c6101b883d79824090d46cfe6f8f ""
+  "codes/Core/src/isr.asm" 1782028238.22127 2760 af1eb603417ce562c2eefa0e8e38d272 ""
+  "codes/Core/src/keypad.asm" 1782028375.14136 3148 911100cd9d4832c6fc14b11fd8d80747 ""
+  "codes/Core/src/led_bar.asm" 1781779194.07671 4290 d8ecca8119c3242cf4acc7c0d4d08419 ""
+  "codes/Core/src/main.asm" 1782028977.69664 6041 add5a68b53e63266362b405fbb475edc ""
+  "codes/Core/src/tables.asm" 1781779241.47548 1540 674049c64c342b268d314ae3365638c7 ""
+  "codes/Core/src/vectors.asm" 1781779162.21499 678 4f851151c5edd7118ff2c0f2fb5e27ff ""
+  "figures/flowchart/display_led.png" 1783142831.59603 246466 3066ea45d20d88e753eab85bd542e832 ""
+  "figures/flowchart/interrupt_timing.png" 1783142832.1241 183961 719bb3c70759b06cc0e2d1a2223e35fc ""
+  "figures/flowchart/main_state.png" 1783143048.80622 282383 406cc5505c55ea61a7083a9f9dbd3689 ""
   "figures/requirements/image1.png" 1783141972.38456 1940635 008633e361a15c87e95a49d2c4863c5c ""
   "figures/requirements/image2.png" 1783141984.17467 1738987 f17f679347bf29185fb176b8159358ab ""
   (generated)
